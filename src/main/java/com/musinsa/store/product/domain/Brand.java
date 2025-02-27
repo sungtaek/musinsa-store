@@ -12,7 +12,7 @@ import lombok.ToString;
 import lombok.Builder.Default;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
