@@ -11,6 +11,7 @@ public enum ResultCode {
 
   // internal exception
   UNKNOWN_ERROR("2000", "Unknown"),
+  DATABASE_ERROR("2001", "Database error"),
   ;
 
   private String code;
