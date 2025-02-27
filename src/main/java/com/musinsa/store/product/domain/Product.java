@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Product {
   private Long id;
+  private Brand brand;
   private Category category;
   private Integer price;
 }
