@@ -17,6 +17,8 @@ import lombok.Builder.Default;
 @AllArgsConstructor
 @ToString
 public class Brand {
+  private static List<Category> CATEGORIES = List.of(Category.values());
+
   private Long id;
   private String name;
   @Default
@@ -34,7 +36,7 @@ public class Brand {
   }
 
   public boolean hasAllCategories() {
-    HashSet<Category> marks = new HashSet<>(List.of(Category.values()));
+    HashSet<Category> marks = new HashSet<>(CATEGORIES);
     products.stream()
         .map(Product::getCategory)
         .forEach(marks::remove);
