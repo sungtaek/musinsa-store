@@ -1,6 +1,5 @@
 package com.musinsa.store.product.domain;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -8,29 +7,39 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductSearchService {
   private final ProductRepository productRepository;
   
   public List<Product> getLowestPricedSet() {
-    // TODO
-    return Collections.emptyList();
+    log.info("get lowest priced set");
+
+    return productRepository.getLowestPricedSet();
   }
 
   public List<Product> getLowestPricedSetForSingleBrand() {
-    // TODO
-    return Collections.emptyList();
+    log.info("get lowest priced set for single brand");
+
+    return productRepository.getLowestPricedSetForSingleBrand();
   }
 
   public CompletableFuture<Optional<Product>> getLowestPricedBy(Category category) {
-    // TODO
-    return CompletableFuture.completedFuture(Optional.empty());
+    return CompletableFuture.supplyAsync(() -> {
+      log.info("get lowest priced by category({})", category);
+
+      return productRepository.getLowestPricedBy(category);
+    });
   }
 
   public CompletableFuture<Optional<Product>> getHighestPricedBy(Category category) {
-    // TODO
-    return CompletableFuture.completedFuture(Optional.empty());
+    return CompletableFuture.supplyAsync(() -> {
+      log.info("get highest priced by category({})", category);
+
+      return productRepository.getHighestPricedBy(category);
+    });
   }
 }
