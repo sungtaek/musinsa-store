@@ -16,6 +16,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +29,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product", indexes = {
-  @Index(columnList = "category, price"),
-  @Index(columnList = "category, id")
+@Table(name = "product", uniqueConstraints = {
+    @UniqueConstraint(name = "brand_category", columnNames = { "brand_id", "category" })
+}, indexes = {
+    @Index(name = "category_price", columnList = "category, price"),
+    @Index(name = "category_id", columnList = "category, id")
 })
 public class ProductEntity extends BaseEntity {
   @Id

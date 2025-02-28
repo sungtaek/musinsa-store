@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "brand", indexes = {
-    @Index(columnList = "total_price")
+    @Index(name = "total_price", columnList = "total_price")
 })
 public class BrandEntity extends BaseEntity {
   @Id
