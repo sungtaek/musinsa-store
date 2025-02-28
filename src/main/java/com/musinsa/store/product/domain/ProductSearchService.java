@@ -29,7 +29,7 @@ public class ProductSearchService {
 
   public CompletableFuture<Optional<Product>> getLowestPricedBy(Category category) {
     return CompletableFuture.supplyAsync(() -> {
-      log.info("get lowest priced by {}", category);
+      log.info("get lowest priced by category({})", category);
 
       return productRepository.getLowestPricedBy(category);
     });
@@ -37,7 +37,7 @@ public class ProductSearchService {
 
   public CompletableFuture<Optional<Product>> getHighestPricedBy(Category category) {
     return CompletableFuture.supplyAsync(() -> {
-      log.info("get highest priced by {}", category);
+      log.info("get highest priced by category({})", category);
 
       return productRepository.getHighestPricedBy(category);
     });
