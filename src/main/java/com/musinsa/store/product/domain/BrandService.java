@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.musinsa.store.product.exception.InvalidBrandException;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BrandService {
   private final BrandRepository brandRepository;
 
+  @Transactional
   public Brand create(Brand brand) {
     log.info("create: {}", brand);
 
@@ -34,6 +36,7 @@ public class BrandService {
     return brandRepository.get(id);
   }
 
+  @Transactional
   public Brand update(Brand brand) {
     log.info("update: {}", brand);
 
@@ -50,6 +53,7 @@ public class BrandService {
     return brandRepository.save(brand);
   }
 
+  @Transactional
   public void delete(Long id) {
     log.info("delete: {}", id);
 
