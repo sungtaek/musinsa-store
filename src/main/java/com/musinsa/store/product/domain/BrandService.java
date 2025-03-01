@@ -28,7 +28,7 @@ public class BrandService {
 
     // check category
     if (!brand.checkCategory()) {
-      throw new InvalidBrandException("Brand should hava one product per all categories");
+      throw new InvalidBrandException("Brand should have one product per categories");
     }
 
     return brandRepository.save(brand);

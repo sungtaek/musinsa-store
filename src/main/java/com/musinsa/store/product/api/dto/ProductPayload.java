@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.Product;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +18,10 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductPayload {
   private Long id;
+  @NotNull
   private Category category;
+  @NotNull
+  @Min(0)
   private Integer price;
 
   public static ProductPayload of(Product product) {
