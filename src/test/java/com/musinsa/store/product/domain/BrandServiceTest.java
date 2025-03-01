@@ -157,8 +157,8 @@ public class BrandServiceTest {
         .products(PRODUCTS)
         .build();
     
-    when(brandRepository.isExist(anyLong()))
-        .thenReturn(true);
+    when(brandRepository.get(anyLong()))
+        .thenReturn(Optional.of(brand));
     when(brandRepository.save(any(Brand.class)))
         .thenReturn(brand);
     
@@ -203,8 +203,8 @@ public class BrandServiceTest {
         .products(PRODUCTS)
         .build();
     
-    when(brandRepository.isExist(anyLong()))
-        .thenReturn(false);
+    when(brandRepository.get(anyLong()))
+        .thenReturn(Optional.empty());
 
     assertThrows(InvalidBrandException.class, () -> {
       brandService.update(brand);
@@ -220,8 +220,8 @@ public class BrandServiceTest {
         .products(PRODUCTS)
         .build();
     
-    when(brandRepository.isExist(anyLong()))
-        .thenReturn(true);
+    when(brandRepository.get(anyLong()))
+        .thenReturn(Optional.of(brand));
     when(brandRepository.save(any(Brand.class)))
         .thenThrow(new DatabaseException());
 
