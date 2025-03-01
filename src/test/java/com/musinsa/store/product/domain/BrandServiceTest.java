@@ -64,12 +64,12 @@ public class BrandServiceTest {
   public void createSuccess() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.save(any(Brand.class)))
-        .thenReturn(brand.toBuilder().id(BRAND_ID).build());
-    
+        .thenReturn(Brand.builder().id(BRAND_ID).name(BRAND_NAME).products(PRODUCTS).build());
+
     brand = brandService.create(brand);
 
     assertNotNull(brand);
@@ -81,7 +81,7 @@ public class BrandServiceTest {
   public void createFailMissingCategory() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(MISSED_PRODUCTS))
+        .products(MISSED_PRODUCTS)
         .build();
     
     assertThrows(InvalidBrandException.class, () -> {
@@ -94,7 +94,7 @@ public class BrandServiceTest {
   public void createFailDuplicatedCategory() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(DUPLICATED_PRODUCTS))
+        .products(DUPLICATED_PRODUCTS)
         .build();
     
     assertThrows(InvalidBrandException.class, () -> {
@@ -107,7 +107,7 @@ public class BrandServiceTest {
   public void createFailDbError() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.save(any(Brand.class)))
@@ -124,7 +124,7 @@ public class BrandServiceTest {
     Brand brand = Brand.builder()
         .id(BRAND_ID)
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.get(anyLong()))
@@ -154,7 +154,7 @@ public class BrandServiceTest {
     Brand brand = Brand.builder()
         .id(BRAND_ID)
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.isExist(anyLong()))
@@ -173,7 +173,7 @@ public class BrandServiceTest {
   public void updateFailMissingCategory() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(MISSED_PRODUCTS))
+        .products(MISSED_PRODUCTS)
         .build();
 
     assertThrows(InvalidBrandException.class, () -> {
@@ -186,7 +186,7 @@ public class BrandServiceTest {
   public void updateFailDuplicatedCategory() {
     Brand brand = Brand.builder()
         .name(BRAND_NAME)
-        .productSet(new ProductSet(DUPLICATED_PRODUCTS))
+        .products(DUPLICATED_PRODUCTS)
         .build();
     
     assertThrows(InvalidBrandException.class, () -> {
@@ -200,7 +200,7 @@ public class BrandServiceTest {
     Brand brand = Brand.builder()
         .id(BRAND_ID)
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.isExist(anyLong()))
@@ -217,7 +217,7 @@ public class BrandServiceTest {
     Brand brand = Brand.builder()
         .id(BRAND_ID)
         .name(BRAND_NAME)
-        .productSet(new ProductSet(PRODUCTS))
+        .products(PRODUCTS)
         .build();
     
     when(brandRepository.isExist(anyLong()))

@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.Product;
-import com.musinsa.store.product.domain.ProductSet;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
 @ExtendWith(SpringExtension.class)
@@ -32,10 +31,10 @@ public class JpaBrandRepositoryTest {
 
   private static final Brand BRAND = Brand.builder()
       .name("A")
-      .productSet(new ProductSet(List.of(
+      .products(List.of(
           Product.builder().category(Category.OUTER).price(1000).build(),
           Product.builder().category(Category.BAGS).price(1000).build(),
-          Product.builder().category(Category.ACCESSORIES).price(1000).build())))
+          Product.builder().category(Category.ACCESSORIES).price(1000).build()))
       .build();
 
   @BeforeEach
@@ -49,10 +48,10 @@ public class JpaBrandRepositoryTest {
 
     Brand brand = Brand.builder()
         .name("test")
-        .productSet(new ProductSet(List.of(
+        .products(List.of(
             Product.builder().category(Category.OUTER).price(1000).build(),
             Product.builder().category(Category.BAGS).price(1000).build(),
-            Product.builder().category(Category.ACCESSORIES).price(1000).build())))
+            Product.builder().category(Category.ACCESSORIES).price(1000).build()))
         .build();
 
     brand = jpaBrandRepositoryAdapter.save(brand);
