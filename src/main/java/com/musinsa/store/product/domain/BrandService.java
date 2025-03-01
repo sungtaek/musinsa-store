@@ -20,9 +20,13 @@ public class BrandService {
   public Brand create(Brand brand) {
     log.info("create: {}", brand);
 
-    if (brand.getId() != null) {
-      throw new InvalidBrandException("New brand should not have id");
+    // unset id
+    brand.setId(null);
+    for (Product product: brand.getProductSet()) {
+      product.setId(null);
     }
+
+    // check category
     if (!brand.checkCategory()) {
       throw new InvalidBrandException("Brand should hava one product per all categories");
     }
@@ -40,9 +44,17 @@ public class BrandService {
   public Brand update(Brand brand) {
     log.info("update: {}", brand);
 
+    // check id
     if (brand.getId() == null) {
       throw new InvalidBrandException("Brand should have id");
     }
+    for (Product product: brand.getProductSet()) {
+      if (product.getId() == null) {
+        throw new InvalidBrandException("Product should have id");
+      }
+    }
+
+    // check category
     if (!brand.checkCategory()) {
       throw new InvalidBrandException("Brand should hava one product per all categories");
     }
