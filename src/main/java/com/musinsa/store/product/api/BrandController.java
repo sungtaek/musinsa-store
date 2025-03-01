@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BrandController {
   private final BrandService brandService;
   
-  @PostMapping
+  @PostMapping({"", "/"})
   public ResponsePayload<BrandPayload> create(@Valid @RequestBody BrandPayload brandPayload) {
     log.info("create brand: {}", brandPayload);
 

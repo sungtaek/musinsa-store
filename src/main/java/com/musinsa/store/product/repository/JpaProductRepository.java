@@ -15,7 +15,7 @@ public interface JpaProductRepository extends JpaRepository<ProductEntity, Long>
     SELECT p
     FROM ProductEntity p
     WHERE p.id IN (
-      SELECT MIN(p2.id)
+      SELECT MAX(p2.id)
       FROM ProductEntity p2
       WHERE p2.category = p.category
         AND p2.price = (
@@ -31,7 +31,7 @@ public interface JpaProductRepository extends JpaRepository<ProductEntity, Long>
     SELECT p
     FROM ProductEntity p
     WHERE p.brand.id = (
-      SELECT MIN(b.id)
+      SELECT MAX(b.id)
       FROM BrandEntity b
       WHERE b.totalPrice = (
         SELECT MIN(b2.totalPrice)

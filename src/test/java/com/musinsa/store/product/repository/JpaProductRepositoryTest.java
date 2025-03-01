@@ -77,7 +77,7 @@ public class JpaProductRepositoryTest {
         new CategoryProduct(Category.TOPS, "C", 10000),
         new CategoryProduct(Category.OUTER, "E", 5000),
         new CategoryProduct(Category.PANTS, "D", 3000),
-        new CategoryProduct(Category.SNEAKERS, "A", 9000),
+        new CategoryProduct(Category.SNEAKERS, "G", 9000),
         new CategoryProduct(Category.BAGS, "A", 2000),
         new CategoryProduct(Category.HATS, "D", 1500),
         new CategoryProduct(Category.SOCKS, "I", 1700),

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.musinsa.store.common.dto.ResponsePayload;
@@ -31,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
 			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     log.warn(ex.getMessage());
@@ -57,6 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleTypeMismatch(
       TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     log.warn(ex.getMessage());
@@ -74,6 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
   @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     log.warn(ex.getMessage());
@@ -81,12 +85,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ResultCode result = ResultCode.INVALID_PARAMETER;
     ResponsePayload<Void> response = ResponsePayload.<Void>builder()
         .code(result.getCode())
-        .message("Request body type doesn't match API spec")
+        .message(ex.getMessage())
         .build();
     return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
   }
 
   @Override
+  @SuppressWarnings("null")
+  protected ResponseEntity<Object> handleHandlerMethodValidationException(
+      HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    log.warn(ex.getMessage(), ex);
+
+    StringBuilder sb = new StringBuilder();
+    ex.getParameterValidationResults().stream()
+        .flatMap(result -> result.getResolvableErrors().stream())
+        .findFirst()
+        .ifPresent(err -> {
+          if (err.getCodes() != null && err.getCodes().length > 0) {
+            sb.append(err.getCodes()[0] + ": ");
+          }
+          sb.append(err.getDefaultMessage());
+        });
+    String error = sb.toString();
+    
+    ResultCode result = ResultCode.INVALID_PARAMETER;
+    ResponsePayload<Void> response = ResponsePayload.<Void>builder()
+        .code(result.getCode())
+        .message(error.isEmpty() ? ex.getMessage() : error)
+        .build();
+    return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+  }
+
+  @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleExceptionInternal(
       Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     log.warn(ex.getMessage());

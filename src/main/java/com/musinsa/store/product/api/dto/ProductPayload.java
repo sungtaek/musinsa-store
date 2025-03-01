@@ -1,5 +1,6 @@
 package com.musinsa.store.product.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.Product;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductPayload {
   private Long id;
   private Category category;
