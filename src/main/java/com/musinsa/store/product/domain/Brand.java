@@ -26,7 +26,7 @@ public class Brand {
 
   public void addProduct(Product product) {
     if (product != null) {
-      productSet.add(product.toBuilder().brand(this).build());
+      productSet.add(product.toBuilder().brand(null).build());
     }
   }
 

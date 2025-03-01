@@ -34,30 +34,30 @@ public class BrandServiceTest {
   private static final String BRAND_NAME = "BRAND_A";
 
   private static final List<Product> PRODUCTS = List.of(
-      Product.builder().category(Category.TOPS).price(1000).build(),
-      Product.builder().category(Category.OUTER).price(1000).build(),
-      Product.builder().category(Category.PANTS).price(1000).build(),
-      Product.builder().category(Category.SNEAKERS).price(1000).build(),
-      Product.builder().category(Category.BAGS).price(1000).build(),
-      Product.builder().category(Category.HATS).price(1000).build(),
-      Product.builder().category(Category.SOCKS).price(1000).build(),
-      Product.builder().category(Category.ACCESSORIES).price(1000).build());
+      Product.builder().id(1L).category(Category.TOPS).price(1000).build(),
+      Product.builder().id(2L).category(Category.OUTER).price(1000).build(),
+      Product.builder().id(3L).category(Category.PANTS).price(1000).build(),
+      Product.builder().id(4L).category(Category.SNEAKERS).price(1000).build(),
+      Product.builder().id(5L).category(Category.BAGS).price(1000).build(),
+      Product.builder().id(6L).category(Category.HATS).price(1000).build(),
+      Product.builder().id(7L).category(Category.SOCKS).price(1000).build(),
+      Product.builder().id(8L).category(Category.ACCESSORIES).price(1000).build());
 
   private static final List<Product> MISSED_PRODUCTS = List.of(
-      Product.builder().category(Category.TOPS).price(1000).build(),
-      Product.builder().category(Category.OUTER).price(1000).build(),
-      Product.builder().category(Category.PANTS).price(1000).build());
+      Product.builder().id(1L).category(Category.TOPS).price(1000).build(),
+      Product.builder().id(2L).category(Category.OUTER).price(1000).build(),
+      Product.builder().id(3L).category(Category.PANTS).price(1000).build());
 
   private static final List<Product> DUPLICATED_PRODUCTS = List.of(
-      Product.builder().category(Category.TOPS).price(1000).build(),
-      Product.builder().category(Category.OUTER).price(1000).build(),
-      Product.builder().category(Category.PANTS).price(1000).build(),
-      Product.builder().category(Category.SNEAKERS).price(1000).build(),
-      Product.builder().category(Category.BAGS).price(1000).build(),
-      Product.builder().category(Category.HATS).price(1000).build(),
-      Product.builder().category(Category.SOCKS).price(1000).build(),
-      Product.builder().category(Category.SOCKS).price(1000).build(),
-      Product.builder().category(Category.ACCESSORIES).price(1000).build());
+      Product.builder().id(1L).category(Category.TOPS).price(1000).build(),
+      Product.builder().id(2L).category(Category.OUTER).price(1000).build(),
+      Product.builder().id(3L).category(Category.PANTS).price(1000).build(),
+      Product.builder().id(4L).category(Category.SNEAKERS).price(1000).build(),
+      Product.builder().id(5L).category(Category.BAGS).price(1000).build(),
+      Product.builder().id(6L).category(Category.HATS).price(1000).build(),
+      Product.builder().id(7L).category(Category.SOCKS).price(1000).build(),
+      Product.builder().id(8L).category(Category.SOCKS).price(1000).build(),
+      Product.builder().id(9L).category(Category.ACCESSORIES).price(1000).build());
 
   @Test
   @DisplayName("브랜드 생성 성공")

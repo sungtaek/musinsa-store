@@ -45,6 +45,9 @@ public class BrandEntity extends BaseEntity {
   private Integer totalPrice;
 
   public static BrandEntity of(Brand brand) {
+    if (brand == null) {
+      return null;
+    }
     BrandEntity brandEntity = BrandEntity.builder()
         .id(brand.getId())
         .name(brand.getName())
