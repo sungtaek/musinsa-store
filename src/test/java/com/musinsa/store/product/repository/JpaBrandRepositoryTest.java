@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.ProductSet;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
 @ExtendWith(SpringExtension.class)
@@ -31,10 +32,10 @@ public class JpaBrandRepositoryTest {
 
   private static final Brand BRAND = Brand.builder()
       .name("A")
-      .products(List.of(
+      .productSet(new ProductSet(List.of(
           Product.builder().category(Category.OUTER).price(1000).build(),
           Product.builder().category(Category.BAGS).price(1000).build(),
-          Product.builder().category(Category.ACCESSORIES).price(1000).build()))
+          Product.builder().category(Category.ACCESSORIES).price(1000).build())))
       .build();
 
   @BeforeEach
@@ -48,18 +49,18 @@ public class JpaBrandRepositoryTest {
 
     Brand brand = Brand.builder()
         .name("test")
-        .products(List.of(
+        .productSet(new ProductSet(List.of(
             Product.builder().category(Category.OUTER).price(1000).build(),
             Product.builder().category(Category.BAGS).price(1000).build(),
-            Product.builder().category(Category.ACCESSORIES).price(1000).build()))
+            Product.builder().category(Category.ACCESSORIES).price(1000).build())))
         .build();
 
     brand = jpaBrandRepositoryAdapter.save(brand);
 
     assertNotNull(brand);
     assertNotNull(brand.getId());
-    assertEquals(3, brand.getProducts().size());
-    brand.getProducts().stream()
+    assertEquals(3, brand.getProductSet().size());
+    brand.getProductSet().stream()
         .forEach(p -> assertNotNull(p.getId()));
   }
 

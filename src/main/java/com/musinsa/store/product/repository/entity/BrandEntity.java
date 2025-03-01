@@ -5,6 +5,7 @@ import java.util.List;
 import com.musinsa.store.common.jpa.BaseEntity;
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.ProductSet;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,9 +50,9 @@ public class BrandEntity extends BaseEntity {
     BrandEntity brandEntity = BrandEntity.builder()
         .id(brand.getId())
         .name(brand.getName())
-        .totalPrice(brand.getTotalPrice())
+        .totalPrice(brand.getProductSet().getTotalPrice())
         .build();
-    brandEntity.setProducts(brand.getProducts().stream()
+    brandEntity.setProducts(brand.getProductSet().stream()
         .map(p -> ProductEntity.builder()
             .id(p.getId())
             .brand(brandEntity)
@@ -66,14 +67,13 @@ public class BrandEntity extends BaseEntity {
     return Brand.builder()
         .id(id)
         .name(name)
-        .products(products.stream()
+        .productSet(new ProductSet(products.stream()
             .map(p -> Product.builder()
                 .id(p.getId())
                 .category(p.getCategory())
                 .price(p.getPrice())
                 .build())
-            .toList())
-        .totalPrice(totalPrice)
+            .toList()))
         .build();
   }
 }

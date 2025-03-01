@@ -35,7 +35,7 @@ public class BrandServiceTest {
   private static final Long BRAND_ID = 1L;
   private static final Brand BRAND_FOR_CREATE = Brand.builder()
         .name("test")
-        .products(List.of(
+        .productSet(new ProductSet(List.of(
             Product.builder().category(Category.TOPS).price(1000).build(),
             Product.builder().category(Category.OUTER).price(1000).build(),
             Product.builder().category(Category.PANTS).price(1000).build(),
@@ -43,12 +43,12 @@ public class BrandServiceTest {
             Product.builder().category(Category.BAGS).price(1000).build(),
             Product.builder().category(Category.HATS).price(1000).build(),
             Product.builder().category(Category.SOCKS).price(1000).build(),
-            Product.builder().category(Category.ACCESSORIES).price(1000).build()))
+            Product.builder().category(Category.ACCESSORIES).price(1000).build())))
         .build();
   private static final Brand BRAND_FOR_UPDATE = Brand.builder()
       .id(BRAND_ID)
       .name("test")
-      .products(List.of(
+      .productSet(new ProductSet(List.of(
           Product.builder().category(Category.TOPS).price(1000).build(),
           Product.builder().category(Category.OUTER).price(1000).build(),
           Product.builder().category(Category.PANTS).price(1000).build(),
@@ -56,7 +56,7 @@ public class BrandServiceTest {
           Product.builder().category(Category.BAGS).price(1000).build(),
           Product.builder().category(Category.HATS).price(1000).build(),
           Product.builder().category(Category.SOCKS).price(1000).build(),
-          Product.builder().category(Category.ACCESSORIES).price(1000).build()))
+          Product.builder().category(Category.ACCESSORIES).price(1000).build())))
       .build();
 
   @Test

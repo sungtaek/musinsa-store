@@ -15,16 +15,20 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductSearchService {
   private final ProductRepository productRepository;
   
-  public List<Product> getLowestPricedSet() {
+  public ProductSet getLowestPricedSet() {
     log.info("get lowest priced set");
 
-    return productRepository.getLowestPricedSet();
+    List<Product> products = productRepository.getLowestPricedSet();
+
+    return new ProductSet(products);
   }
 
-  public List<Product> getLowestPricedSetForSingleBrand() {
+  public ProductSet getLowestPricedSetForSingleBrand() {
     log.info("get lowest priced set for single brand");
 
-    return productRepository.getLowestPricedSetForSingleBrand();
+    List<Product> products = productRepository.getLowestPricedSetForSingleBrand();
+
+    return new ProductSet(products);
   }
 
   public CompletableFuture<Optional<Product>> getLowestPricedBy(Category category) {
