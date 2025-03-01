@@ -15,4 +15,9 @@ public class Brand {
   private String name;
   @Default
   private ProductSet productSet = new ProductSet();
+
+  public boolean checkCategory() {
+    return (productSet.hasAllCategories() && productSet.size() == Category.values().length);
+  }
+
 }

@@ -23,8 +23,8 @@ public class BrandService {
     if (brand.getId() != null) {
       throw new InvalidBrandException("New brand should not have id");
     }
-    if (!brand.getProductSet().hasAllCategories()) {
-      throw new InvalidBrandException("Missing some categories");
+    if (!brand.checkCategory()) {
+      throw new InvalidBrandException("Brand should hava one product per all categories");
     }
 
     return brandRepository.save(brand);
@@ -43,8 +43,8 @@ public class BrandService {
     if (brand.getId() == null) {
       throw new InvalidBrandException("Brand should have id");
     }
-    if (!brand.getProductSet().hasAllCategories()) {
-      throw new InvalidBrandException("Missing some categories");
+    if (!brand.checkCategory()) {
+      throw new InvalidBrandException("Brand should hava one product per all categories");
     }
 
     if (!brandRepository.isExist(brand.getId())) {
