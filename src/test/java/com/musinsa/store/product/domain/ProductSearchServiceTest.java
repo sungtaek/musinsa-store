@@ -48,10 +48,10 @@ public class ProductSearchServiceTest {
     when(productRepository.getLowestPricedSet())
         .thenReturn(lowestProducts);
     
-    List<Product> products = productSearchService.getLowestPricedSet();
+    ProductSet productSet = productSearchService.getLowestPricedSet();
 
-    assertNotNull(products);
-    assertThat(products).isEqualTo(lowestProducts);
+    assertNotNull(productSet);
+    assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
   }
 
   @Test
@@ -82,10 +82,10 @@ public class ProductSearchServiceTest {
     when(productRepository.getLowestPricedSetForSingleBrand())
         .thenReturn(lowestProducts);
     
-    List<Product> products = productSearchService.getLowestPricedSetForSingleBrand();
+    ProductSet productSet = productSearchService.getLowestPricedSetForSingleBrand();
 
-    assertNotNull(products);
-    assertThat(products).isEqualTo(lowestProducts);
+    assertNotNull(productSet);
+    assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
   }
 
   @Test

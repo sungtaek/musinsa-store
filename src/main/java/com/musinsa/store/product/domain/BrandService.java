@@ -23,7 +23,7 @@ public class BrandService {
     if (brand.getId() != null) {
       throw new InvalidBrandException("New brand should not have id");
     }
-    if (!brand.hasAllCategories()) {
+    if (!brand.getProductSet().hasAllCategories()) {
       throw new InvalidBrandException("Missing some categories");
     }
 
@@ -43,7 +43,7 @@ public class BrandService {
     if (brand.getId() == null) {
       throw new InvalidBrandException("Brand should have id");
     }
-    if (!brand.hasAllCategories()) {
+    if (!brand.getProductSet().hasAllCategories()) {
       throw new InvalidBrandException("Missing some categories");
     }
 

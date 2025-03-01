@@ -60,7 +60,7 @@ public class JpaProductRepositoryTest {
           .name(BRAND_NAMES[i])
           .build();
       for (int j = 0; j < BRAND_PRODUCTS[i].length; j++) {
-        brand.getProducts().add(Product.builder()
+        brand.getProductSet().add(Product.builder()
             .brand(brand)
             .category(Category.values()[j])
             .price(BRAND_PRODUCTS[i][j])
