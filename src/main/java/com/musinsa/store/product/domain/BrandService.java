@@ -50,7 +50,7 @@ public class BrandService {
     }
     for (Product product: brand.getProductSet()) {
       if (product.getId() == null) {
-        throw new InvalidBrandException("Product should have id");
+        throw new InvalidBrandException("All products should have id");
       }
     }
 
@@ -59,9 +59,14 @@ public class BrandService {
       throw new InvalidBrandException("Brand should hava one product per all categories");
     }
 
-    if (!brandRepository.isExist(brand.getId())) {
-      throw new InvalidBrandException("Brand not found");
+    // check exist and compare product set
+    Brand curBrand = brandRepository.get(brand.getId())
+        .orElseThrow(() -> new InvalidBrandException("Brand not found"));
+    if (!curBrand.getProductSet()
+        .isSameProductSet(brand.getProductSet())) {
+      throw new InvalidBrandException("Product set is different from the current, please check the product's id");
     }
+
     return brandRepository.save(brand);
   }
 

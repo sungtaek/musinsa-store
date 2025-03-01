@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProductSet extends ArrayList<Product> {
   private static List<Category> CATEGORIES = List.of(Category.values());
@@ -29,4 +31,11 @@ public class ProductSet extends ArrayList<Product> {
         .forEach(marks::remove);
     return marks.isEmpty();
   }
+
+  public boolean isSameProductSet(ProductSet other) {
+    Set<Long> ids = stream().map(Product::getId).collect(Collectors.toSet());
+    Set<Long> otherIds = other.stream().map(Product::getId).collect(Collectors.toSet());
+    return (ids.size() == otherIds.size() && ids.equals(otherIds));
+  }
+
 }
