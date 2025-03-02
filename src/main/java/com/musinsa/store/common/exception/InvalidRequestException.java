@@ -1,20 +1,20 @@
 package com.musinsa.store.common.exception;
 
-public class ClientException extends ServiceException {
+public class InvalidRequestException extends ServiceException {
 
-  public ClientException() {
+  public InvalidRequestException() {
     super(ResultCode.INVALID_REQUEST.getDefaultMessage());
   }
 
-  public ClientException(Throwable t) {
+  public InvalidRequestException(Throwable t) {
     super(t.getMessage(), t);
   }
 
-  public ClientException(String message) {
+  public InvalidRequestException(String message) {
     super(message);
   }
 
-  public ClientException(String message, Throwable t) {
+  public InvalidRequestException(String message, Throwable t) {
     super(message, t);
   }
 

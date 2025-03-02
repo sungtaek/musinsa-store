@@ -3,7 +3,7 @@ package com.musinsa.store.common.exception;
 public class InternalException extends ServiceException {
 
   public InternalException() {
-    super(ResultCode.UNKNOWN_ERROR.getDefaultMessage());
+    super(ResultCode.INTERNAL_ERROR.getDefaultMessage());
   }
 
   public InternalException(Throwable t) {
@@ -19,7 +19,7 @@ public class InternalException extends ServiceException {
   }
 
   public ResultCode getResultCode() {
-    return ResultCode.UNKNOWN_ERROR;
+    return ResultCode.INTERNAL_ERROR;
   }
 
 }

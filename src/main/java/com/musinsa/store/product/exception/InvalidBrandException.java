@@ -1,8 +1,8 @@
 package com.musinsa.store.product.exception;
 
-import com.musinsa.store.common.exception.ClientException;
+import com.musinsa.store.common.exception.InvalidRequestException;
 
-public class InvalidBrandException extends ClientException {
+public class InvalidBrandException extends InvalidRequestException {
 
   public InvalidBrandException(String message) {
     super(message);
