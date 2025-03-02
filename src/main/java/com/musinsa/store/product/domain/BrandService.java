@@ -28,7 +28,7 @@ public class BrandService {
 
     // check category
     if (!brand.checkCategory()) {
-      throw new InvalidBrandException("Brand should hava one product per all categories");
+      throw new InvalidBrandException("Brand should have one product per categories");
     }
 
     return brandRepository.save(brand);
@@ -41,7 +41,7 @@ public class BrandService {
   }
 
   @Transactional
-  public Brand update(Brand brand) {
+  public Optional<Brand> update(Brand brand) {
     log.info("update: {}", brand);
 
     // check id
@@ -59,15 +59,16 @@ public class BrandService {
       throw new InvalidBrandException("Brand should hava one product per all categories");
     }
 
-    // check exist and compare product set
-    Brand curBrand = brandRepository.get(brand.getId())
-        .orElseThrow(() -> new InvalidBrandException("Brand not found"));
-    if (!curBrand.getProductSet()
-        .isSameProductSet(brand.getProductSet())) {
-      throw new InvalidBrandException("Product set is different from the current, please check the product's id");
+    // check current and save
+    Optional<Brand> curBrand = brandRepository.get(brand.getId());
+    if (curBrand.isPresent()) {
+      if (!curBrand.get().getProductSet().isSameProductSet(brand.getProductSet())) {
+        throw new InvalidBrandException("Product set is different from the current, please check the product's id");
+      }
+      return Optional.of(brandRepository.save(brand));
+    } else {
+      return Optional.empty();
     }
-
-    return brandRepository.save(brand);
   }
 
   @Transactional

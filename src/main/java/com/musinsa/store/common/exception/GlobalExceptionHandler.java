@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -118,11 +119,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   @SuppressWarnings("null")
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    log.warn(ex.getMessage(), ex);
+
+    ResultCode result = ResultCode.INVALID_PARAMETER;
+    ResponsePayload<Void> response = ResponsePayload.<Void>builder()
+        .code(result.getCode())
+        .message(ex.getMessage())
+        .build();
+    return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+  }
+
+  @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleExceptionInternal(
       Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-    log.warn(ex.getMessage());
+    log.error(ex.getMessage(), ex);
 
-    ResultCode result = ResultCode.UNKNOWN_ERROR;
+    ResultCode result = ResultCode.INTERNAL_ERROR;
     ResponsePayload<Void> response = ResponsePayload.<Void>builder()
         .code(result.getCode())
         .message(ex.getMessage())
@@ -134,11 +149,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(ServiceException.class)
   @ResponseBody
   public ResponseEntity<Object> handleServiceException(HttpServletRequest request, ServiceException ex) {
-    ResultCode result = ResultCode.UNKNOWN_ERROR;
+    ResultCode result = ResultCode.INTERNAL_ERROR;
     HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    if (ex instanceof ClientException) {
-      result = ((ClientException) ex).getResultCode();
+    if (ex instanceof InvalidRequestException) {
+      result = ((InvalidRequestException) ex).getResultCode();
       httpStatus = HttpStatus.BAD_REQUEST;
+      log.warn(ex.getMessage());
+    } else if (ex instanceof NotFoundException) {
+      result = ((NotFoundException) ex).getResultCode();
+      httpStatus = HttpStatus.NOT_FOUND;
       log.warn(ex.getMessage());
     } else if (ex instanceof InternalException) {
       result = ((InternalException) ex).getResultCode();
@@ -186,7 +205,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<Object> handleUnknownException(HttpServletRequest request, Exception ex) {
     log.error(ex.getMessage(), ex);
 
-    ResultCode result = ResultCode.UNKNOWN_ERROR;
+    ResultCode result = ResultCode.INTERNAL_ERROR;
     ResponsePayload<Void> response = ResponsePayload.<Void>builder()
         .code(result.getCode())
         .message(ex.getMessage())

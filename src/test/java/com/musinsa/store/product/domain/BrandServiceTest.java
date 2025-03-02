@@ -1,6 +1,7 @@
 package com.musinsa.store.product.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -162,7 +163,7 @@ public class BrandServiceTest {
     when(brandRepository.save(any(Brand.class)))
         .thenReturn(brand);
     
-    Brand updatedBrand = brandService.update(brand);
+    Brand updatedBrand = brandService.update(brand).get();
 
     assertNotNull(updatedBrand);
     assertEquals(brand, updatedBrand);
@@ -206,9 +207,9 @@ public class BrandServiceTest {
     when(brandRepository.get(anyLong()))
         .thenReturn(Optional.empty());
 
-    assertThrows(InvalidBrandException.class, () -> {
-      brandService.update(brand);
-    });
+    Optional<Brand> updatedBrand = brandService.update(brand);
+
+    assertFalse(updatedBrand.isPresent());
   }
 
   @Test

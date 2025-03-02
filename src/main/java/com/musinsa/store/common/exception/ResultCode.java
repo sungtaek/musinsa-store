@@ -6,13 +6,16 @@ import lombok.Getter;
 public enum ResultCode {
   SUCCESS("0000", "Success"),
   
-  // client exception
-  INVALID_PARAMETER("1001", "Ivnalid parameter"),
-  INVALID_REQUEST("1900", "Invalid request"),
+  // invalid request exception
+  INVALID_REQUEST("1000", "Invalid request"),
+  INVALID_PARAMETER("1001", "Invalid parameter"),
+
+  // not found exception
+  NOT_FOUND("1100", "Not found"),
 
   // internal exception
+  INTERNAL_ERROR("2000", "Internal error"),
   DATABASE_ERROR("2001", "Database error"),
-  UNKNOWN_ERROR("2900", "Unknown"),
   ;
 
   private String code;

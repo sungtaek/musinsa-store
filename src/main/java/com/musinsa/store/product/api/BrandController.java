@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musinsa.store.common.dto.ResponsePayload;
+import com.musinsa.store.common.exception.NotFoundException;
 import com.musinsa.store.product.api.dto.BrandPayload;
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.BrandService;
@@ -39,7 +40,8 @@ public class BrandController {
   public ResponsePayload<BrandPayload> get(@PathVariable("id") Long id) {
     log.info("get brand: {}", id);
 
-    Brand brand = brandService.get(id).get();
+    Brand brand = brandService.get(id)
+        .orElseThrow(() -> new NotFoundException("Brand not found"));
 
     return ResponsePayload.<BrandPayload>builder()
         .data(BrandPayload.of(brand))
@@ -52,7 +54,8 @@ public class BrandController {
     log.info("update brand: id({}) {}", id, brandPayload);
 
     brandPayload.setId(id);
-    Brand brand = brandService.update(brandPayload.toBrand());
+    Brand brand = brandService.update(brandPayload.toBrand())
+        .orElseThrow(() -> new NotFoundException("Brand not found"));
 
     return ResponsePayload.<BrandPayload>builder()
         .data(BrandPayload.of(brand))
