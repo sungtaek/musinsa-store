@@ -3,6 +3,7 @@ package com.musinsa.store.product.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -10,17 +11,15 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.Product;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class JpaBrandRepositoryTest {
 
@@ -28,6 +27,9 @@ public class JpaBrandRepositoryTest {
 
   @Autowired
   private JpaBrandRepository jpaBrandRepository;
+
+  @Autowired
+  private TestEntityManager testEntityManager;
 
   private static final Brand BRAND = Brand.builder()
       .name("A")
@@ -43,7 +45,7 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 저장")
+  @DisplayName("브랜드 저장")
   public void save() {
 
     Brand brand = Brand.builder()
@@ -64,31 +66,31 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 체크")
+  @DisplayName("브랜드 체크")
   public void isExist() {
-    Long brandId = jpaBrandRepository.save(BrandEntity.of(BRAND)).getId();
+    BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 
-    assertTrue(jpaBrandRepositoryAdapter.isExist(brandId));
+    assertTrue(jpaBrandRepositoryAdapter.isExist(brand.getId()));
     assertFalse(jpaBrandRepositoryAdapter.isExist(10000L));
   }
 
   @Test
-  @DisplayName("Brand 조회")
+  @DisplayName("브랜드 조회")
   public void get() {
-    Long brandId = jpaBrandRepository.save(BrandEntity.of(BRAND)).getId();
+    BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 
-    assertTrue(jpaBrandRepositoryAdapter.get(brandId).isPresent());
+    assertTrue(jpaBrandRepositoryAdapter.get(brand.getId()).isPresent());
     assertFalse(jpaBrandRepositoryAdapter.get(1000L).isPresent());
   }
 
   @Test
-  @DisplayName("Brand 삭제")
+  @DisplayName("브랜드 삭제")
   public void delete() {
-    Long brandId = jpaBrandRepository.save(BrandEntity.of(BRAND)).getId();
+    BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 
-    jpaBrandRepositoryAdapter.delete(brandId);
+    jpaBrandRepositoryAdapter.delete(brand.getId());
 
-    assertFalse(jpaBrandRepository.existsById(brandId));
+    assertNull(testEntityManager.find(BrandEntity.class, brand.getId()));
   }
 
 }

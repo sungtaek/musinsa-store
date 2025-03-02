@@ -65,7 +65,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 생성 성공")
+  @DisplayName("브랜드 생성 성공")
   public void createSuccess() throws Exception {
 
     when(brandService.create(any(Brand.class)))
@@ -94,14 +94,14 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
   @Test
-  @DisplayName("Brand 생성 실패 - 잘못된 필드")
+  @DisplayName("브랜드 생성 실패 - 잘못된 필드")
   public void createFailInvalidField() throws Exception {
 
     // invalid brand name
@@ -162,7 +162,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 생성 실패 - Service 에러")
+  @DisplayName("브랜드 생성 실패 - Service 에러")
   public void createFailServiceError() throws Exception {
 
     when(brandService.create(any(Brand.class)))
@@ -184,7 +184,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 조회 성공")
+  @DisplayName("브랜드 조회 성공")
   public void getSuccess() throws Exception {
 
     when(brandService.get(anyLong()))
@@ -205,14 +205,14 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
   @Test
-  @DisplayName("Brand 조회 실패 - Not found")
+  @DisplayName("브랜드 조회 실패 - Not found")
   public void getFailNotFound() throws Exception {
 
     when(brandService.get(anyLong()))
@@ -226,7 +226,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 조회 실패 - Service 에러")
+  @DisplayName("브랜드 조회 실패 - Service 에러")
   public void getFailServiceError() throws Exception {
 
     when(brandService.get(anyLong()))
@@ -240,7 +240,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 성공")
+  @DisplayName("브랜드 업데이트 성공")
   public void updateSuccess() throws Exception {
 
     when(brandService.update(any(Brand.class)))
@@ -270,14 +270,14 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
   @Test
-  @DisplayName("Brand 업데이트 실패 - 잘못된 필드")
+  @DisplayName("브랜드 업데이트 실패 - 잘못된 필드")
   public void updateFailInvalidName() throws Exception {
 
     // invalid brand name
@@ -341,7 +341,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 실패 - Not found")
+  @DisplayName("브랜드 업데이트 실패 - Not found")
   public void updateFailNotFound() throws Exception {
 
     when(brandService.update(any(Brand.class)))
@@ -364,7 +364,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 실패 - Service 에러")
+  @DisplayName("브랜드 업데이트 실패 - Service 에러")
   public void updateFailServiceError() throws Exception {
 
     when(brandService.update(any(Brand.class)))
@@ -387,7 +387,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 삭제 성공")
+  @DisplayName("브랜드 삭제 성공")
   public void deleteSuccess() throws Exception {
 
     mockMvc.perform(delete("/api/v1/brands/1"))
@@ -398,7 +398,7 @@ public class BrandControllerTest {
   }
 
   @Test
-  @DisplayName("Brand 삭제 실패 - Service 에러")
+  @DisplayName("브랜드 삭제 실패 - Service 에러")
   public void deleteFailServiceError() throws Exception {
 
     doThrow(new InternalException())

@@ -59,6 +59,16 @@ public class BrandServiceTest {
       Product.builder().id(7L).category(Category.SOCKS).price(1000).build(),
       Product.builder().id(8L).category(Category.SOCKS).price(1000).build(),
       Product.builder().id(9L).category(Category.ACCESSORIES).price(1000).build());
+  
+  private static final List<Product> NO_ID_PRODUCTS = List.of(
+      Product.builder().category(Category.TOPS).price(1000).build(),
+      Product.builder().category(Category.OUTER).price(1000).build(),
+      Product.builder().category(Category.PANTS).price(1000).build(),
+      Product.builder().category(Category.SNEAKERS).price(1000).build(),
+      Product.builder().category(Category.BAGS).price(1000).build(),
+      Product.builder().category(Category.HATS).price(1000).build(),
+      Product.builder().category(Category.SOCKS).price(1000).build(),
+      Product.builder().category(Category.ACCESSORIES).price(1000).build());
 
   @Test
   @DisplayName("브랜드 생성 성공")
@@ -167,6 +177,31 @@ public class BrandServiceTest {
 
     assertNotNull(updatedBrand);
     assertEquals(brand, updatedBrand);
+  }
+
+  @Test
+  @DisplayName("브랜드 업데이트 실패 - id 누락")
+  public void updateFailMissingId() {
+    
+    // no brand id
+    assertThrows(InvalidBrandException.class, () -> {
+      Brand brand = Brand.builder()
+          .name(BRAND_NAME)
+          .products(PRODUCTS)
+          .build();
+      brandService.update(brand).get();
+    });
+
+    // no product id
+    assertThrows(InvalidBrandException.class, () -> {
+      Brand brand = Brand.builder()
+          .id(BRAND_ID)
+          .name(BRAND_NAME)
+          .products(NO_ID_PRODUCTS)
+          .build();
+      brandService.update(brand).get();
+    });
+
   }
 
   @Test

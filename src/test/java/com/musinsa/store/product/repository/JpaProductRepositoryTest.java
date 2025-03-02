@@ -10,28 +10,25 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.musinsa.store.product.domain.Product;
 import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
-
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class JpaProductRepositoryTest {
 
   private JpaProductRepositoryAdapter jpaProductRepositoryAdapter;
 
   @Autowired
-  private JpaBrandRepository jpaBrandRepository;
+  private JpaProductRepository jpaProductRepository;
 
   @Autowired
-  private JpaProductRepository jpaProductRepository;
+  private TestEntityManager testEntityManager;
 
   private record CategoryProduct(Category category, String brandName, Integer price) {
   }
@@ -66,7 +63,7 @@ public class JpaProductRepositoryTest {
             .price(BRAND_PRODUCTS[i][j])
             .build());
       }
-      jpaBrandRepository.save(BrandEntity.of(brand));
+      testEntityManager.persist(BrandEntity.of(brand));
     }
   }
 
