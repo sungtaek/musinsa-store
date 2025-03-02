@@ -45,7 +45,7 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 저장")
+  @DisplayName("브랜드 저장")
   public void save() {
 
     Brand brand = Brand.builder()
@@ -66,7 +66,7 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 체크")
+  @DisplayName("브랜드 체크")
   public void isExist() {
     BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 
@@ -75,7 +75,7 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 조회")
+  @DisplayName("브랜드 조회")
   public void get() {
     BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 
@@ -84,7 +84,7 @@ public class JpaBrandRepositoryTest {
   }
 
   @Test
-  @DisplayName("Brand 삭제")
+  @DisplayName("브랜드 삭제")
   public void delete() {
     BrandEntity brand = testEntityManager.persist(BrandEntity.of(BRAND));
 

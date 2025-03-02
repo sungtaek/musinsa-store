@@ -32,7 +32,7 @@ public class BrandApiTest {
   private MockMvc mockMvc;
   
   @Test
-  @DisplayName("Brand 생성 성공")
+  @DisplayName("브랜드 생성 성공")
   public void createSuccess() throws Exception {
 
     mockMvc.perform(post("/api/v1/brands")
@@ -70,7 +70,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 생성 실패 - 잘못된 필드")
+  @DisplayName("브랜드 생성 실패 - 잘못된 필드")
   public void createFailInvalidField() throws Exception {
 
     // invalid name
@@ -180,7 +180,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 조회 성공")
+  @DisplayName("브랜드 조회 성공")
   public void getSuccess() throws Exception {
 
     mockMvc.perform(get("/api/v1/brands/1"))
@@ -194,7 +194,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 조회 실패 - Not found")
+  @DisplayName("브랜드 조회 실패 - Not found")
   public void getFailNotFound() throws Exception {
 
     mockMvc.perform(get("/api/v1/brands/100"))
@@ -205,7 +205,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 성공")
+  @DisplayName("브랜드 업데이트 성공")
   public void updateSuccess() throws Exception {
 
     mockMvc.perform(post("/api/v1/brands/1")
@@ -235,7 +235,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 실패 - 잘못된 필드")
+  @DisplayName("브랜드 업데이트 실패 - 잘못된 필드")
   public void updateFailInvalidField() throws Exception {
 
     // invalid name
@@ -391,7 +391,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 업데이트 실패 - Not found")
+  @DisplayName("브랜드 업데이트 실패 - Not found")
   public void updateFailNotFound() throws Exception {
 
     mockMvc.perform(post("/api/v1/brands/100")
@@ -418,7 +418,7 @@ public class BrandApiTest {
   }
 
   @Test
-  @DisplayName("Brand 삭제 성공")
+  @DisplayName("브랜드 삭제 성공")
   public void deleteSuccess() throws Exception {
 
     // delete exists
