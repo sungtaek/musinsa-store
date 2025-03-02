@@ -94,9 +94,9 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
@@ -205,9 +205,9 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
@@ -270,9 +270,9 @@ public class BrandControllerTest {
         .andExpect(jsonPath("$.data.id", equalTo(BRAND_ID.intValue())))
         .andExpect(jsonPath("$.data.name", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.products.[0].id", equalTo(PRODUCT_ID.intValue())))
-        .andExpect(jsonPath("$.data.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.products[0].id", equalTo(PRODUCT_ID.intValue())))
+        .andExpect(jsonPath("$.data.products[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.products[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 

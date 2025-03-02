@@ -58,14 +58,14 @@ public class BrandApiTest {
         .andExpect(jsonPath("$.data.id").exists())
         .andExpect(jsonPath("$.data.name", equalTo("Z")))
         .andExpect(jsonPath("$.data.products", hasSize(8)))
-        .andExpect(jsonPath("$.data.products.[0].id").exists())
-        .andExpect(jsonPath("$.data.products.[1].id").exists())
-        .andExpect(jsonPath("$.data.products.[2].id").exists())
-        .andExpect(jsonPath("$.data.products.[3].id").exists())
-        .andExpect(jsonPath("$.data.products.[4].id").exists())
-        .andExpect(jsonPath("$.data.products.[5].id").exists())
-        .andExpect(jsonPath("$.data.products.[6].id").exists())
-        .andExpect(jsonPath("$.data.products.[7].id").exists())
+        .andExpect(jsonPath("$.data.products[0].id").exists())
+        .andExpect(jsonPath("$.data.products[1].id").exists())
+        .andExpect(jsonPath("$.data.products[2].id").exists())
+        .andExpect(jsonPath("$.data.products[3].id").exists())
+        .andExpect(jsonPath("$.data.products[4].id").exists())
+        .andExpect(jsonPath("$.data.products[5].id").exists())
+        .andExpect(jsonPath("$.data.products[6].id").exists())
+        .andExpect(jsonPath("$.data.products[7].id").exists())
         .andReturn();
   }
 
