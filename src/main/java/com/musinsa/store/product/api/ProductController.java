@@ -2,6 +2,7 @@ package com.musinsa.store.product.api;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musinsa.store.common.dto.ResponsePayload;
-import com.musinsa.store.common.exception.ServiceException;
 import com.musinsa.store.product.api.dto.CategoryProductSetPayload;
 import com.musinsa.store.product.api.dto.ResultProductSetPayload;
 import com.musinsa.store.product.domain.Category;
@@ -57,7 +57,7 @@ public class ProductController {
   }
 
   @GetMapping("/lowest-highest-category")
-  public ResponsePayload<ResultProductSetPayload> getLowestHighestPriced(
+  public ResponsePayload<ResultProductSetPayload> getLowestHighestPricedCategory(
       @RequestParam(value = "category") Category category) throws Throwable {
     log.info("get lowest/highest priced: category({})", category);
     CategoryProductSetPayload lowestPayload = null;
@@ -70,11 +70,7 @@ public class ProductController {
       lowestPayload = CategoryProductSetPayload.of(lowestProduct.get().get());
       highestPayload = CategoryProductSetPayload.of(highestProduct.get().get());
     } catch (Exception ex) {
-      if (ex.getCause() instanceof ServiceException) {
-        throw ex.getCause();
-      } else {
-        throw ex;
-      }
+      throwUnwrapedException(ex);
     }
 
     return ResponsePayload.<ResultProductSetPayload>builder()
@@ -84,6 +80,13 @@ public class ProductController {
             .highestPrice(highestPayload)
             .build())
         .build();
+  }
+
+  private void throwUnwrapedException(Exception ex) throws Exception {
+    if (ex instanceof ExecutionException) {
+      throw (Exception) ex.getCause();
+    }
+    throw ex;
   }
 
 }

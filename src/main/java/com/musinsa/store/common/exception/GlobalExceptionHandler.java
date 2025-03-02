@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -118,9 +119,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   @SuppressWarnings("null")
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    log.warn(ex.getMessage(), ex);
+
+    ResultCode result = ResultCode.INVALID_PARAMETER;
+    ResponsePayload<Void> response = ResponsePayload.<Void>builder()
+        .code(result.getCode())
+        .message(ex.getMessage())
+        .build();
+    return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
+  }
+
+  @Override
+  @SuppressWarnings("null")
   protected ResponseEntity<Object> handleExceptionInternal(
       Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-    log.warn(ex.getMessage());
+    log.error(ex.getMessage(), ex);
 
     ResultCode result = ResultCode.INTERNAL_ERROR;
     ResponsePayload<Void> response = ResponsePayload.<Void>builder()
