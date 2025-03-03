@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.musinsa.store.common.dto.Page;
 import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.exception.InvalidBrandException;
 
@@ -16,6 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BrandService {
   private final BrandRepository brandRepository;
+
+  public Page<BrandDto> list(int page, int size) {
+    log.info("list: page({}) size({})", page, size);
+
+    return brandRepository.list(page, size);
+  }
 
   @Transactional
   public BrandDto create(BrandDto brandDto) {

@@ -73,4 +73,11 @@ public class BrandEntity extends BaseEntity {
             ProductEntity::toProductWithoutBrand))
         .build();
   }
+
+  public BrandDto toBrandWithoutProducts() {
+    return BrandDto.builder()
+        .id(id)
+        .name(name)
+        .build();
+  }
 }
