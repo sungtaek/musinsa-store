@@ -34,10 +34,10 @@ public class BrandController {
       @RequestParam(value = "size", defaultValue = "20") Integer size) {
     log.info("list brand: page({}) size({})", page, size);
 
-    Page<Brand> brandPage = brandService.list(page, size);
+    Page<BrandDto> brandPage = brandService.list(page, size);
 
     return PageResponsePayload.<BrandPayload>builder()
-        .data(brandPage.stream().map(BrandPayload::of).toList())
+        .data(brandPage.stream().map(BrandPayload::from).toList())
         .page(brandPage.getPage())
         .size(brandPage.getSize())
         .totalPage(brandPage.getTotalPage())
