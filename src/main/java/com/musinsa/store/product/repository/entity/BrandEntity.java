@@ -73,4 +73,11 @@ public class BrandEntity extends BaseEntity {
             .toList())
         .build();
   }
+
+  public Brand toBrandWithoutProducts() {
+    return Brand.builder()
+        .id(id)
+        .name(name)
+        .build();
+  }
 }

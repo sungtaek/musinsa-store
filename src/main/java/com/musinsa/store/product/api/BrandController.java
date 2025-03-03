@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musinsa.store.common.dto.Page;
+import com.musinsa.store.common.dto.PageResponsePayload;
 import com.musinsa.store.common.dto.ResponsePayload;
 import com.musinsa.store.common.exception.NotFoundException;
 import com.musinsa.store.product.api.dto.BrandPayload;
@@ -25,6 +28,22 @@ import lombok.extern.slf4j.Slf4j;
 public class BrandController {
   private final BrandService brandService;
   
+  @GetMapping({"", "/"})
+  public PageResponsePayload<BrandPayload> list(
+      @RequestParam(value = "page", defaultValue = "0") Integer page,
+      @RequestParam(value = "size", defaultValue = "20") Integer size) {
+    log.info("list brand: page({}) size({})", page, size);
+
+    Page<Brand> brandPage = brandService.list(page, size);
+
+    return PageResponsePayload.<BrandPayload>builder()
+        .data(brandPage.stream().map(BrandPayload::of).toList())
+        .page(brandPage.getPage())
+        .size(brandPage.getSize())
+        .totalPage(brandPage.getTotalPage())
+        .build();
+  }
+
   @PostMapping({"", "/"})
   public ResponsePayload<BrandPayload> create(@Valid @RequestBody BrandPayload brandPayload) {
     log.info("create brand: {}", brandPayload);
