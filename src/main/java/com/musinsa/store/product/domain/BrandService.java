@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.musinsa.store.common.dto.Page;
+import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.exception.InvalidBrandException;
 
 import jakarta.transaction.Transactional;
@@ -17,48 +18,42 @@ import lombok.extern.slf4j.Slf4j;
 public class BrandService {
   private final BrandRepository brandRepository;
 
-  public Page<Brand> list(int page, int size) {
+  public Page<BrandDto> list(int page, int size) {
     log.info("list: page({}) size({})", page, size);
 
     return brandRepository.list(page, size);
   }
 
   @Transactional
-  public Brand create(Brand brand) {
-    log.info("create: {}", brand);
+  public BrandDto create(BrandDto brandDto) {
+    log.info("create: {}", brandDto);
+    Brand brand = brandDto.toBrand();
 
     // unset id
-    brand.setId(null);
-    for (Product product: brand.getProductSet()) {
-      product.setId(null);
-    }
+    brand.clearIds();
 
     // check category
     if (!brand.checkCategory()) {
       throw new InvalidBrandException("Brand should have one product per categories");
     }
 
-    return brandRepository.save(brand);
+    return brandRepository.save(BrandDto.from(brand));
   }
 
-  public Optional<Brand> get(Long id) {
+  public Optional<BrandDto> get(Long id) {
     log.info("get: {}", id);
 
     return brandRepository.get(id);
   }
 
   @Transactional
-  public Optional<Brand> update(Brand brand) {
-    log.info("update: {}", brand);
+  public Optional<BrandDto> update(BrandDto brandDto) {
+    log.info("update: {}", brandDto);
+    Brand brand = brandDto.toBrand();
 
     // check id
-    if (brand.getId() == null) {
-      throw new InvalidBrandException("Brand should have id");
-    }
-    for (Product product: brand.getProductSet()) {
-      if (product.getId() == null) {
-        throw new InvalidBrandException("All products should have id");
-      }
+    if (!brand.checkIds()) {
+      throw new InvalidBrandException("Brand and all products should have id");
     }
 
     // check category
@@ -67,12 +62,13 @@ public class BrandService {
     }
 
     // check current and save
-    Optional<Brand> curBrand = brandRepository.get(brand.getId());
-    if (curBrand.isPresent()) {
-      if (!curBrand.get().getProductSet().isSameProductSet(brand.getProductSet())) {
+    Optional<BrandDto> curBrandDto = brandRepository.get(brand.getId());
+    if (curBrandDto.isPresent()) {
+      Brand curBrand = curBrandDto.get().toBrand();
+      if (!curBrand.hasSameProducts(brand)) {
         throw new InvalidBrandException("Product set is different from the current, please check the product's id");
       }
-      return Optional.of(brandRepository.save(brand));
+      return Optional.of(brandRepository.save(BrandDto.from(brand)));
     } else {
       return Optional.empty();
     }

@@ -3,7 +3,8 @@ package com.musinsa.store.product.api.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.musinsa.store.product.domain.Brand;
+import com.musinsa.store.product.domain.dto.BrandDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -26,26 +27,26 @@ public class BrandPayload {
   @Valid
   private List<ProductPayload> products;
   
-  public static BrandPayload of(Brand brand) {
+  public static BrandPayload from(BrandDto brand) {
     if (brand == null) {
       return null;
     }
     return BrandPayload.builder()
         .id(brand.getId())
         .name(brand.getName())
-        .products(brand.getProductSet().stream()
-            .map(ProductPayload::of)
+        .products(brand.getProducts().stream()
+            .map(ProductPayload::from)
             .toList())
         .build();
   }
 
-  public Brand toBrand() {
-    return Brand.builder()
+  public BrandDto toBrand() {
+    return BrandDto.builder()
         .id(id)
         .name(name)
-        .products(products.stream()
+        .products(ProductSet.of(products.stream()
             .map(ProductPayload::toProduct)
-            .toList())
+            .toList()))
         .build();
   }
 }

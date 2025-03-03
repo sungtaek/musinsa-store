@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import static org.hamcrest.Matchers.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,11 +26,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.musinsa.store.common.exception.GlobalExceptionHandler;
 import com.musinsa.store.common.exception.InternalException;
 import com.musinsa.store.common.exception.ResultCode;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
 import com.musinsa.store.product.domain.ProductSearchService;
-import com.musinsa.store.product.domain.ProductSet;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductControllerTest {
@@ -68,16 +66,14 @@ public class ProductControllerTest {
   public void getLowestPricedSetSuccess() throws Exception {
 
     when(productSearchService.getLowestPricedSet())
-        .thenReturn(new ProductSet(List.of(
-            Product.builder()
+        .thenReturn(ProductSet.of(
+            ProductDto.builder()
                 .id(PRODUCT_ID)
-                .brand(Brand.builder()
-                    .id(BRAND_ID)
-                    .name(BRAND_NAME)
-                    .build())
+                .brandId(BRAND_ID)
+                .brandName(BRAND_NAME)
                 .category(PRODUCT_CATEGORY)
                 .price(PRODUCT_PRICE)
-                .build())));
+                .build()));
 
     mockMvc.perform(get("/api/v1/products/lowest-set"))
         .andDo(print())
@@ -110,16 +106,14 @@ public class ProductControllerTest {
   public void getLowestPricedSetForSingleBrandSuccess() throws Exception {
 
     when(productSearchService.getLowestPricedSetForSingleBrand())
-        .thenReturn(new ProductSet(List.of(
-            Product.builder()
+        .thenReturn(ProductSet.of(
+            ProductDto.builder()
                 .id(PRODUCT_ID)
-                .brand(Brand.builder()
-                    .id(BRAND_ID)
-                    .name(BRAND_NAME)
-                    .build())
+                .brandId(BRAND_ID)
+                .brandName(BRAND_NAME)
                 .category(PRODUCT_CATEGORY)
                 .price(PRODUCT_PRICE)
-                .build())));
+                .build()));
 
     mockMvc.perform(get("/api/v1/products/lowest-set")
         .param("singleBrand", "true"))
@@ -155,22 +149,18 @@ public class ProductControllerTest {
   public void getLowestHighestPricedCategorySuccess() throws Exception {
 
     when(productSearchService.getLowestPricedBy(any(Category.class)))
-        .thenReturn(CompletableFuture.completedFuture(Optional.of(Product.builder()
+        .thenReturn(CompletableFuture.completedFuture(Optional.of(ProductDto.builder()
             .id(PRODUCT_ID)
-            .brand(Brand.builder()
-                .id(BRAND_ID)
-                .name(BRAND_NAME)
-                .build())
+            .brandId(BRAND_ID)
+            .brandName(BRAND_NAME)
             .category(PRODUCT_CATEGORY)
             .price(PRODUCT_PRICE)
             .build())));
     when(productSearchService.getHighestPricedBy(any(Category.class)))
-        .thenReturn(CompletableFuture.completedFuture(Optional.of(Product.builder()
+        .thenReturn(CompletableFuture.completedFuture(Optional.of(ProductDto.builder()
             .id(PRODUCT2_ID)
-            .brand(Brand.builder()
-                .id(BRAND2_ID)
-                .name(BRAND2_NAME)
-                .build())
+            .brandId(BRAND2_ID)
+            .brandName(BRAND2_NAME)
             .category(PRODUCT2_CATEGORY)
             .price(PRODUCT2_PRICE)
             .build())));

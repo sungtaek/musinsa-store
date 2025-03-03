@@ -14,8 +14,8 @@ import com.musinsa.store.common.dto.PageResponsePayload;
 import com.musinsa.store.common.dto.ResponsePayload;
 import com.musinsa.store.common.exception.NotFoundException;
 import com.musinsa.store.product.api.dto.BrandPayload;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.BrandService;
+import com.musinsa.store.product.domain.dto.BrandDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,10 @@ public class BrandController {
       @RequestParam(value = "size", defaultValue = "20") Integer size) {
     log.info("list brand: page({}) size({})", page, size);
 
-    Page<Brand> brandPage = brandService.list(page, size);
+    Page<BrandDto> brandPage = brandService.list(page, size);
 
     return PageResponsePayload.<BrandPayload>builder()
-        .data(brandPage.stream().map(BrandPayload::of).toList())
+        .data(brandPage.stream().map(BrandPayload::from).toList())
         .page(brandPage.getPage())
         .size(brandPage.getSize())
         .totalPage(brandPage.getTotalPage())
@@ -48,10 +48,10 @@ public class BrandController {
   public ResponsePayload<BrandPayload> create(@Valid @RequestBody BrandPayload brandPayload) {
     log.info("create brand: {}", brandPayload);
 
-    Brand brand = brandService.create(brandPayload.toBrand());
+    BrandDto brand = brandService.create(brandPayload.toBrand());
 
     return ResponsePayload.<BrandPayload>builder()
-        .data(BrandPayload.of(brand))
+        .data(BrandPayload.from(brand))
         .build();
   }
 
@@ -59,11 +59,11 @@ public class BrandController {
   public ResponsePayload<BrandPayload> get(@PathVariable("id") Long id) {
     log.info("get brand: {}", id);
 
-    Brand brand = brandService.get(id)
+    BrandDto brand = brandService.get(id)
         .orElseThrow(() -> new NotFoundException("Brand not found"));
 
     return ResponsePayload.<BrandPayload>builder()
-        .data(BrandPayload.of(brand))
+        .data(BrandPayload.from(brand))
         .build();
   }
 
@@ -73,11 +73,11 @@ public class BrandController {
     log.info("update brand: id({}) {}", id, brandPayload);
 
     brandPayload.setId(id);
-    Brand brand = brandService.update(brandPayload.toBrand())
+    BrandDto brand = brandService.update(brandPayload.toBrand())
         .orElseThrow(() -> new NotFoundException("Brand not found"));
 
     return ResponsePayload.<BrandPayload>builder()
-        .data(BrandPayload.of(brand))
+        .data(BrandPayload.from(brand))
         .build();
   }
 

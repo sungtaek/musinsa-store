@@ -13,9 +13,9 @@ import com.musinsa.store.common.dto.ResponsePayload;
 import com.musinsa.store.product.api.dto.CategoryProductSetPayload;
 import com.musinsa.store.product.api.dto.ResultProductSetPayload;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
 import com.musinsa.store.product.domain.ProductSearchService;
-import com.musinsa.store.product.domain.ProductSet;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +35,10 @@ public class ProductController {
 
     if(singleBrand) {
       ProductSet productSet = productSearchService.getLowestPricedSetForSingleBrand();
-      lowestPayload = CategoryProductSetPayload.of(getFristBrandName(productSet), productSet);
+      lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
       ProductSet productSet = productSearchService.getLowestPricedSet();
-      lowestPayload = CategoryProductSetPayload.of(productSet);
+      lowestPayload = CategoryProductSetPayload.from(productSet);
     }
 
     return ResponsePayload.<ResultProductSetPayload>builder()
@@ -50,9 +50,9 @@ public class ProductController {
 
   private String getFristBrandName(ProductSet productSet) {
     return productSet.stream()
-        .filter(p -> p.getBrand() != null)
+        .filter(p -> p.getBrandName() != null)
         .findFirst()
-        .map(p -> p.getBrand().getName())
+        .map(ProductDto::getBrandName)
         .get();
   }
 
@@ -63,12 +63,12 @@ public class ProductController {
     CategoryProductSetPayload lowestPayload = null;
     CategoryProductSetPayload highestPayload = null;
 
-    CompletableFuture<Optional<Product>> lowestProduct = productSearchService.getLowestPricedBy(category);
-    CompletableFuture<Optional<Product>> highestProduct = productSearchService.getHighestPricedBy(category);
+    CompletableFuture<Optional<ProductDto>> lowestProduct = productSearchService.getLowestPricedBy(category);
+    CompletableFuture<Optional<ProductDto>> highestProduct = productSearchService.getHighestPricedBy(category);
 
     try {
-      lowestPayload = CategoryProductSetPayload.of(lowestProduct.get().get());
-      highestPayload = CategoryProductSetPayload.of(highestProduct.get().get());
+      lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().get());
+      highestPayload = CategoryProductSetPayload.from(highestProduct.get().get());
     } catch (Exception ex) {
       throwUnwrapedException(ex);
     }

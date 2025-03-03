@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.musinsa.store.common.dto.Page;
 import com.musinsa.store.common.exception.DatabaseException;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.BrandRepository;
+import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class JpaBrandRepositoryAdapter implements BrandRepository {
   private final JpaBrandRepository repository;
 
   @Override
-  public Page<Brand> list(int page, int size) {
+  public Page<BrandDto> list(int page, int size) {
     try {
       return Page.of(repository.findAll(PageRequest.of(page, size)),
           BrandEntity::toBrandWithoutProducts);
@@ -30,9 +30,9 @@ public class JpaBrandRepositoryAdapter implements BrandRepository {
   }
 
   @Override
-  public Brand save(Brand brand) {
+  public BrandDto save(BrandDto brand) {
     try {
-      return repository.save(BrandEntity.of(brand))
+      return repository.save(BrandEntity.from(brand))
           .toBrand();
     } catch (Exception ex) {
       throw new DatabaseException(ex);
@@ -49,7 +49,7 @@ public class JpaBrandRepositoryAdapter implements BrandRepository {
   }
 
   @Override
-  public Optional<Brand> get(Long id) {
+  public Optional<BrandDto> get(Long id) {
     try {
       return repository.findById(id)
           .map(BrandEntity::toBrand);

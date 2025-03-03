@@ -1,11 +1,13 @@
 package com.musinsa.store.product.domain;
 
-import java.util.List;
 import java.util.Optional;
 
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
+
 public interface ProductRepository {
-  List<Product> getLowestPricedSet();
-  List<Product> getLowestPricedSetForSingleBrand();
-  Optional<Product> getLowestPricedBy(Category category);
-  Optional<Product> getHighestPricedBy(Category category);
+  ProductSet getLowestPricedSet();
+  ProductSet getLowestPricedSetForSingleBrand();
+  Optional<ProductDto> getLowestPricedBy(Category category);
+  Optional<ProductDto> getHighestPricedBy(Category category);
 }

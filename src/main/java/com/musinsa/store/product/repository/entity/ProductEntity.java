@@ -1,9 +1,8 @@
 package com.musinsa.store.product.repository.entity;
 
 import com.musinsa.store.common.jpa.BaseEntity;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.dto.ProductDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,13 +51,19 @@ public class ProductEntity extends BaseEntity {
   @Column(name = "price", nullable = false)
   private Integer price;
 
-  public Product toProduct() {
-    return Product.builder()
+  public ProductDto toProduct() {
+    return ProductDto.builder()
         .id(id)
-        .brand(Brand.builder()
-            .id(brand.getId())
-            .name(brand.getName())
-            .build())
+        .brandId(brand.getId())
+        .brandName(brand.getName())
+        .category(category)
+        .price(price)
+        .build();
+  }
+
+  public ProductDto toProductWithoutBrand() {
+    return ProductDto.builder()
+        .id(id)
         .category(category)
         .price(price)
         .build();

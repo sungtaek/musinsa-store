@@ -14,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import com.musinsa.store.product.domain.Product;
-import com.musinsa.store.product.domain.Brand;
+import com.musinsa.store.product.domain.dto.BrandDto;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.repository.entity.BrandEntity;
 
@@ -53,17 +54,16 @@ public class JpaProductRepositoryTest {
   public void before() {
     jpaProductRepositoryAdapter = new JpaProductRepositoryAdapter(jpaProductRepository);
     for (int i = 0; i < BRAND_NAMES.length; i++) {
-      Brand brand = Brand.builder()
+      BrandDto brand = BrandDto.builder()
           .name(BRAND_NAMES[i])
           .build();
       for (int j = 0; j < BRAND_PRODUCTS[i].length; j++) {
-        brand.getProductSet().add(Product.builder()
-            .brand(brand)
+        brand.getProducts().add(ProductDto.builder()
             .category(Category.values()[j])
             .price(BRAND_PRODUCTS[i][j])
             .build());
       }
-      testEntityManager.persist(BrandEntity.of(brand));
+      testEntityManager.persist(BrandEntity.from(brand));
     }
   }
 
@@ -80,9 +80,9 @@ public class JpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "I", 1700),
         new CategoryProduct(Category.ACCESSORIES, "F", 1900));
 
-    List<Product> products = jpaProductRepositoryAdapter.getLowestPricedSet();
+    ProductSet products = jpaProductRepositoryAdapter.getLowestPricedSet();
     List<CategoryProduct> result = products.stream()
-        .map(p -> new CategoryProduct(p.getCategory(), p.getBrand().getName(), p.getPrice()))
+        .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
 
     assertThat(result).containsExactlyInAnyOrderElementsOf(expected);
@@ -101,9 +101,9 @@ public class JpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "D", 2400),
         new CategoryProduct(Category.ACCESSORIES, "D", 2000));
 
-    List<Product> products = jpaProductRepositoryAdapter.getLowestPricedSetForSingleBrand();
+    ProductSet products = jpaProductRepositoryAdapter.getLowestPricedSetForSingleBrand();
     List<CategoryProduct> result = products.stream()
-        .map(p -> new CategoryProduct(p.getCategory(), p.getBrand().getName(), p.getPrice()))
+        .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
 
     assertThat(result).containsExactlyInAnyOrderElementsOf(expected);
@@ -112,20 +112,20 @@ public class JpaProductRepositoryTest {
   @Test
   @DisplayName("카테고리 최저가 검색")
   public void getLowestPricedByCategory() {
-    Optional<Product> product = jpaProductRepositoryAdapter.getLowestPricedBy(Category.BAGS);
+    Optional<ProductDto> product = jpaProductRepositoryAdapter.getLowestPricedBy(Category.BAGS);
 
     assertNotNull(product);
-    assertEquals("A", product.get().getBrand().getName());
+    assertEquals("A", product.get().getBrandName());
     assertEquals(2000, product.get().getPrice());
   }
 
   @Test
   @DisplayName("카테고리 최고가 검색")
   public void getHighestPricedByCategory() {
-    Optional<Product> product = jpaProductRepositoryAdapter.getHighestPricedBy(Category.BAGS);
+    Optional<ProductDto> product = jpaProductRepositoryAdapter.getHighestPricedBy(Category.BAGS);
 
     assertNotNull(product);
-    assertEquals("D", product.get().getBrand().getName());
+    assertEquals("D", product.get().getBrandName());
     assertEquals(2500, product.get().getPrice());
   }
 
