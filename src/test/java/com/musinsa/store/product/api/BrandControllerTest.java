@@ -34,10 +34,11 @@ import com.musinsa.store.common.exception.InternalException;
 import com.musinsa.store.common.exception.ResultCode;
 import com.musinsa.store.product.api.dto.BrandPayload;
 import com.musinsa.store.product.api.dto.ProductPayload;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.BrandService;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.dto.BrandDto;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 @ExtendWith(MockitoExtension.class)
 public class BrandControllerTest {
@@ -68,11 +69,11 @@ public class BrandControllerTest {
   @DisplayName("브랜드 생성 성공")
   public void createSuccess() throws Exception {
 
-    when(brandService.create(any(Brand.class)))
-        .thenReturn(Brand.builder()
+    when(brandService.create(any(BrandDto.class)))
+        .thenReturn(BrandDto.builder()
             .id(BRAND_ID)
             .name(BRAND_NAME)
-            .products(List.of(Product.builder()
+            .products(ProductSet.of(ProductDto.builder()
                 .id(PRODUCT_ID)
                 .category(PRODUCT_CATEGORY)
                 .price(PRODUCT_PRICE)
@@ -165,7 +166,7 @@ public class BrandControllerTest {
   @DisplayName("브랜드 생성 실패 - Service 에러")
   public void createFailServiceError() throws Exception {
 
-    when(brandService.create(any(Brand.class)))
+    when(brandService.create(any(BrandDto.class)))
         .thenThrow(new InternalException());
 
     mockMvc.perform(post("/api/v1/brands")
@@ -188,10 +189,10 @@ public class BrandControllerTest {
   public void getSuccess() throws Exception {
 
     when(brandService.get(anyLong()))
-        .thenReturn(Optional.of(Brand.builder()
+        .thenReturn(Optional.of(BrandDto.builder()
             .id(BRAND_ID)
             .name(BRAND_NAME)
-            .products(List.of(Product.builder()
+            .products(ProductSet.of(ProductDto.builder()
                 .id(PRODUCT_ID)
                 .category(PRODUCT_CATEGORY)
                 .price(PRODUCT_PRICE)
@@ -243,11 +244,11 @@ public class BrandControllerTest {
   @DisplayName("브랜드 업데이트 성공")
   public void updateSuccess() throws Exception {
 
-    when(brandService.update(any(Brand.class)))
-        .thenReturn(Optional.of(Brand.builder()
+    when(brandService.update(any(BrandDto.class)))
+        .thenReturn(Optional.of(BrandDto.builder()
             .id(BRAND_ID)
             .name(BRAND_NAME)
-            .products(List.of(Product.builder()
+            .products(ProductSet.of(ProductDto.builder()
                 .id(PRODUCT_ID)
                 .category(PRODUCT_CATEGORY)
                 .price(PRODUCT_PRICE)
@@ -344,7 +345,7 @@ public class BrandControllerTest {
   @DisplayName("브랜드 업데이트 실패 - Not found")
   public void updateFailNotFound() throws Exception {
 
-    when(brandService.update(any(Brand.class)))
+    when(brandService.update(any(BrandDto.class)))
         .thenReturn(Optional.empty());
 
     mockMvc.perform(post("/api/v1/brands/1")
@@ -367,7 +368,7 @@ public class BrandControllerTest {
   @DisplayName("브랜드 업데이트 실패 - Service 에러")
   public void updateFailServiceError() throws Exception {
 
-    when(brandService.update(any(Brand.class)))
+    when(brandService.update(any(BrandDto.class)))
         .thenThrow(new InternalException());
 
     mockMvc.perform(post("/api/v1/brands/1")

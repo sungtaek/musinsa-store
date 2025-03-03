@@ -1,14 +1,14 @@
 package com.musinsa.store.product.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import com.musinsa.store.common.exception.DatabaseException;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
 import com.musinsa.store.product.domain.ProductRepository;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 import com.musinsa.store.product.repository.entity.ProductEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -20,27 +20,27 @@ public class JpaProductRepositoryAdapter implements ProductRepository {
   private final JpaProductRepository repository;
 
   @Override
-  public List<Product> getLowestPricedSet() {
+  public ProductSet getLowestPricedSet() {
     try {
-      return repository.findLowestPricedSet().stream()
-          .map(ProductEntity::toProduct).toList();
+      return ProductSet.of(repository.findLowestPricedSet(),
+          ProductEntity::toProduct);
     } catch (Exception ex) {
       throw new DatabaseException(ex);
     }
   }
 
   @Override
-  public List<Product> getLowestPricedSetForSingleBrand() {
+  public ProductSet getLowestPricedSetForSingleBrand() {
     try {
-      return repository.findLowestPricedSetForSingleBrand().stream()
-          .map(ProductEntity::toProduct).toList();
+      return ProductSet.of(repository.findLowestPricedSetForSingleBrand(),
+          ProductEntity::toProduct);
     } catch (Exception ex) {
       throw new DatabaseException(ex);
     }
   }
 
   @Override
-  public Optional<Product> getLowestPricedBy(Category category) {
+  public Optional<ProductDto> getLowestPricedBy(Category category) {
     try {
       return repository.findFirstByCategoryOrderByPriceAsc(category)
           .map(ProductEntity::toProduct);
@@ -50,7 +50,7 @@ public class JpaProductRepositoryAdapter implements ProductRepository {
   }
 
   @Override
-  public Optional<Product> getHighestPricedBy(Category category) {
+  public Optional<ProductDto> getHighestPricedBy(Category category) {
     try {
       return repository.findFirstByCategoryOrderByPriceDesc(category)
           .map(ProductEntity::toProduct);

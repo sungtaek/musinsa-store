@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -19,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.musinsa.store.common.exception.DatabaseException;
+import com.musinsa.store.product.domain.dto.ProductDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductSearchServiceTest {
@@ -29,21 +30,21 @@ public class ProductSearchServiceTest {
   @Mock
   private ProductRepository productRepository;
 
-  private static final Brand BRAND_A = Brand.builder().name("A").build();
-  private static final Brand BRAND_B = Brand.builder().name("B").build();
+  private static final String BRAND_A = "AA";
+  private static final String BRAND_B = "BB";
 
   @Test
   @DisplayName("최저가격 세트 검색 성공")
   public void getLowestPricedSetSuccess() {
-    List<Product> lowestProducts = List.of(
-      Product.builder().brand(BRAND_A).category(Category.TOPS).price(1000).build(),
-      Product.builder().brand(BRAND_B).category(Category.OUTER).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.PANTS).price(1000).build(),
-      Product.builder().brand(BRAND_B).category(Category.SNEAKERS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.BAGS).price(1000).build(),
-      Product.builder().brand(BRAND_B).category(Category.HATS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.SOCKS).price(1000).build(),
-      Product.builder().brand(BRAND_B).category(Category.ACCESSORIES).price(1000).build());
+    ProductSet lowestProducts = ProductSet.of(
+      ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_B).category(Category.OUTER).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.PANTS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_B).category(Category.SNEAKERS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.BAGS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_B).category(Category.HATS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_B).category(Category.ACCESSORIES).price(1000).build());
     
     when(productRepository.getLowestPricedSet())
         .thenReturn(lowestProducts);
@@ -69,15 +70,15 @@ public class ProductSearchServiceTest {
   @Test
   @DisplayName("한 브랜드 최저가격 세트 검색 성공")
   public void getLowestPricedSetForSingleBrandSuccess() {
-    List<Product> lowestProducts = List.of(
-      Product.builder().brand(BRAND_A).category(Category.TOPS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.OUTER).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.PANTS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.SNEAKERS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.BAGS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.HATS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.SOCKS).price(1000).build(),
-      Product.builder().brand(BRAND_A).category(Category.ACCESSORIES).price(1000).build());
+    ProductSet lowestProducts = ProductSet.of(
+      ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.OUTER).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.PANTS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.SNEAKERS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.BAGS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.HATS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
+      ProductDto.builder().brandName(BRAND_A).category(Category.ACCESSORIES).price(1000).build());
     
     when(productRepository.getLowestPricedSetForSingleBrand())
         .thenReturn(lowestProducts);
@@ -103,12 +104,12 @@ public class ProductSearchServiceTest {
   @Test
   @DisplayName("카테고리 최저가격 검색 성공")
   public void getLowestPricedByCateogrySuccess() throws Exception {
-    Product lowestProduct = Product.builder().brand(BRAND_A).category(Category.TOPS).price(1000).build();
-    
+    ProductDto lowestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(1000).build();
+
     when(productRepository.getLowestPricedBy(any(Category.class)))
         .thenReturn(Optional.of(lowestProduct));
     
-    Optional<Product> product = productSearchService.getLowestPricedBy(Category.TOPS).get();
+    Optional<ProductDto> product = productSearchService.getLowestPricedBy(Category.TOPS).get();
 
     assertNotNull(product);
     assertEquals(lowestProduct, product.get());
@@ -130,12 +131,12 @@ public class ProductSearchServiceTest {
   @Test
   @DisplayName("카테고리 최고가격 검색 성공")
   public void getHighestPricedByCateogrySuccess() throws Exception {
-    Product highestProduct = Product.builder().brand(BRAND_A).category(Category.TOPS).price(2000).build();
+    ProductDto highestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(2000).build();
     
     when(productRepository.getHighestPricedBy(any(Category.class)))
         .thenReturn(Optional.of(highestProduct));
     
-    Optional<Product> product = productSearchService.getHighestPricedBy(Category.TOPS).get();
+    Optional<ProductDto> product = productSearchService.getHighestPricedBy(Category.TOPS).get();
 
     assertNotNull(product);
     assertEquals(highestProduct, product.get());

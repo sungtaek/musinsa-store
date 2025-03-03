@@ -1,9 +1,8 @@
 package com.musinsa.store.product.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.musinsa.store.product.domain.Brand;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.dto.ProductDto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,11 +15,10 @@ public class CategoryProductPayload {
   private String brandName;
   private Integer price;
 
-  public static CategoryProductPayload of(Product product) {
-    Brand brand = product.getBrand();
+  public static CategoryProductPayload from(ProductDto product) {
     return CategoryProductPayload.builder()
         .category(product.getCategory())
-        .brandName((brand != null) ? brand.getName() : null)
+        .brandName(product.getBrandName())
         .price(product.getPrice())
         .build();
   }

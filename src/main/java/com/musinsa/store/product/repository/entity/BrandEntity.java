@@ -3,7 +3,8 @@ package com.musinsa.store.product.repository.entity;
 import java.util.List;
 
 import com.musinsa.store.common.jpa.BaseEntity;
-import com.musinsa.store.product.domain.Brand;
+import com.musinsa.store.product.domain.dto.BrandDto;
+import com.musinsa.store.product.domain.dto.ProductSet;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,16 +45,16 @@ public class BrandEntity extends BaseEntity {
   @Column(name = "total_price", nullable = false)
   private Integer totalPrice;
 
-  public static BrandEntity of(Brand brand) {
+  public static BrandEntity from(BrandDto brand) {
     if (brand == null) {
       return null;
     }
     BrandEntity brandEntity = BrandEntity.builder()
         .id(brand.getId())
         .name(brand.getName())
-        .totalPrice(brand.getProductSet().getTotalPrice())
+        .totalPrice(brand.getProducts().getTotalPrice())
         .build();
-    brandEntity.setProducts(brand.getProductSet().stream()
+    brandEntity.setProducts(brand.getProducts().stream()
         .map(p -> ProductEntity.builder()
             .id(p.getId())
             .brand(brandEntity)
@@ -64,13 +65,12 @@ public class BrandEntity extends BaseEntity {
     return brandEntity;
   }
 
-  public Brand toBrand() {
-    return Brand.builder()
+  public BrandDto toBrand() {
+    return BrandDto.builder()
         .id(id)
         .name(name)
-        .products(products.stream()
-            .map(ProductEntity::toProduct)
-            .toList())
+        .products(ProductSet.of(products,
+            ProductEntity::toProductWithoutBrand))
         .build();
   }
 }

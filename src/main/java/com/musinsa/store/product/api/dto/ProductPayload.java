@@ -2,7 +2,7 @@ package com.musinsa.store.product.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musinsa.store.product.domain.Category;
-import com.musinsa.store.product.domain.Product;
+import com.musinsa.store.product.domain.dto.ProductDto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public class ProductPayload {
   @Min(0)
   private Integer price;
 
-  public static ProductPayload of(Product product) {
+  public static ProductPayload from(ProductDto product) {
     if (product == null) {
       return null;
     }
@@ -35,8 +35,8 @@ public class ProductPayload {
         .build();
   }
 
-  public Product toProduct() {
-    return Product.builder()
+  public ProductDto toProduct() {
+    return ProductDto.builder()
         .id(id)
         .category(category)
         .price(price)
