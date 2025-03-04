@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
+import com.musinsa.store.product.domain.dto.SearchOrder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,31 +18,24 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductSearchService {
   private final ProductRepository productRepository;
   
-  public ProductSet getLowestPricedSet() {
-    log.info("get lowest priced set");
+  public ProductSet searchSet(SearchOrder order) {
+    log.info("search set by {}", order);
 
-    return productRepository.getLowestPricedSet();
+    return productRepository.findSet(order);
   }
 
-  public ProductSet getLowestPricedSetForSingleBrand() {
-    log.info("get lowest priced set for single brand");
+  public ProductSet searchSetForSingleBrand(SearchOrder order) {
+    log.info("search set for single brand by {}", order);
 
-    return productRepository.getLowestPricedSetForSingleBrand();
+    return productRepository.findSetForSingleBrand(order);
   }
 
-  public CompletableFuture<Optional<ProductDto>> getLowestPricedBy(Category category) {
+  public CompletableFuture<Optional<ProductDto>> searchCategory(Category category, SearchOrder order) {
     return CompletableFuture.supplyAsync(() -> {
-      log.info("get lowest priced by category({})", category);
+      log.info("search category({}) by {}", category, order);
 
-      return productRepository.getLowestPricedBy(category);
+      return productRepository.findBy(category, order);
     });
   }
 
-  public CompletableFuture<Optional<ProductDto>> getHighestPricedBy(Category category) {
-    return CompletableFuture.supplyAsync(() -> {
-      log.info("get highest priced by category({})", category);
-
-      return productRepository.getHighestPricedBy(category);
-    });
-  }
 }

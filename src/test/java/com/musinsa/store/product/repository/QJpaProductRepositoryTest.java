@@ -13,20 +13,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
 import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
+import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.common.config.DatabaseConfig;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.repository.entity.BrandEntity;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @DataJpaTest
-public class JpaProductRepositoryTest {
+@Import(DatabaseConfig.class)
+public class QJpaProductRepositoryTest {
 
-  private JpaProductRepositoryAdapter jpaProductRepositoryAdapter;
+  private QJpaProductRepository qjpaProductRepository;
 
   @Autowired
-  private JpaProductRepository jpaProductRepository;
+  private JPAQueryFactory jpaQueryFactory;
 
   @Autowired
   private TestEntityManager testEntityManager;
@@ -52,7 +57,7 @@ public class JpaProductRepositoryTest {
 
   @BeforeEach
   public void before() {
-    jpaProductRepositoryAdapter = new JpaProductRepositoryAdapter(jpaProductRepository);
+    qjpaProductRepository = new QJpaProductRepository(jpaQueryFactory);
     for (int i = 0; i < BRAND_NAMES.length; i++) {
       BrandDto brand = BrandDto.builder()
           .name(BRAND_NAMES[i])
@@ -80,7 +85,7 @@ public class JpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "I", 1700),
         new CategoryProduct(Category.ACCESSORIES, "F", 1900));
 
-    ProductSet products = jpaProductRepositoryAdapter.getLowestPricedSet();
+    ProductSet products = qjpaProductRepository.findSet(SearchOrder.LOWEST_PRICE);
     List<CategoryProduct> result = products.stream()
         .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
@@ -101,7 +106,7 @@ public class JpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "D", 2400),
         new CategoryProduct(Category.ACCESSORIES, "D", 2000));
 
-    ProductSet products = jpaProductRepositoryAdapter.getLowestPricedSetForSingleBrand();
+    ProductSet products = qjpaProductRepository.findSetForSingleBrand(SearchOrder.LOWEST_PRICE);
     List<CategoryProduct> result = products.stream()
         .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
@@ -112,7 +117,7 @@ public class JpaProductRepositoryTest {
   @Test
   @DisplayName("카테고리 최저가 검색")
   public void getLowestPricedByCategory() {
-    Optional<ProductDto> product = jpaProductRepositoryAdapter.getLowestPricedBy(Category.BAGS);
+    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, SearchOrder.LOWEST_PRICE);
 
     assertNotNull(product);
     assertEquals("A", product.get().getBrandName());
@@ -122,7 +127,7 @@ public class JpaProductRepositoryTest {
   @Test
   @DisplayName("카테고리 최고가 검색")
   public void getHighestPricedByCategory() {
-    Optional<ProductDto> product = jpaProductRepositoryAdapter.getHighestPricedBy(Category.BAGS);
+    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, SearchOrder.HIGHEST_PRICE);
 
     assertNotNull(product);
     assertEquals("D", product.get().getBrandName());

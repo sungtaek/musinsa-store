@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.musinsa.store.common.exception.DatabaseException;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
+import com.musinsa.store.product.domain.dto.SearchOrder;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductSearchServiceTest {
@@ -46,10 +48,10 @@ public class ProductSearchServiceTest {
       ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
       ProductDto.builder().brandName(BRAND_B).category(Category.ACCESSORIES).price(1000).build());
     
-    when(productRepository.getLowestPricedSet())
+    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
         .thenReturn(lowestProducts);
     
-    ProductSet productSet = productSearchService.getLowestPricedSet();
+    ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -59,11 +61,11 @@ public class ProductSearchServiceTest {
   @DisplayName("최저가격 세트 검색 실패 - DB 에러")
   public void getLowestPricedSetFailDbError() {
 
-    when(productRepository.getLowestPricedSet())
+    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
         .thenThrow(new DatabaseException());
     
     assertThrows(DatabaseException.class, () -> {
-      productRepository.getLowestPricedSet();
+      productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
     });
   }
 
@@ -80,10 +82,10 @@ public class ProductSearchServiceTest {
       ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
       ProductDto.builder().brandName(BRAND_A).category(Category.ACCESSORIES).price(1000).build());
     
-    when(productRepository.getLowestPricedSetForSingleBrand())
+    when(productRepository.findSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
         .thenReturn(lowestProducts);
     
-    ProductSet productSet = productSearchService.getLowestPricedSetForSingleBrand();
+    ProductSet productSet = productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -93,11 +95,11 @@ public class ProductSearchServiceTest {
   @DisplayName("한 브랜드 최저가격 세트 검색 실패 - DB 에러")
   public void getLowestPricedSetForSingleBrandFailDbError() {
 
-    when(productRepository.getLowestPricedSetForSingleBrand())
+    when(productRepository.findSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
         .thenThrow(new DatabaseException());
     
     assertThrows(DatabaseException.class, () -> {
-      productRepository.getLowestPricedSetForSingleBrand();
+      productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
     });
   }
 
@@ -106,10 +108,10 @@ public class ProductSearchServiceTest {
   public void getLowestPricedByCateogrySuccess() throws Exception {
     ProductDto lowestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(1000).build();
 
-    when(productRepository.getLowestPricedBy(any(Category.class)))
+    when(productRepository.findBy(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
         .thenReturn(Optional.of(lowestProduct));
     
-    Optional<ProductDto> product = productSearchService.getLowestPricedBy(Category.TOPS).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.LOWEST_PRICE).get();
 
     assertNotNull(product);
     assertEquals(lowestProduct, product.get());
@@ -119,11 +121,11 @@ public class ProductSearchServiceTest {
   @DisplayName("카테고리 최저가격 검색 실패 - DB 에러")
   public void getLowestPricedByCateogryFailDbError() throws Exception {
     
-    when(productRepository.getLowestPricedBy(any(Category.class)))
+    when(productRepository.findBy(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
         .thenThrow(new DatabaseException());
     
     ExecutionException ex = assertThrows(ExecutionException.class, () -> {
-      productSearchService.getLowestPricedBy(Category.TOPS).get();
+      productSearchService.searchCategory(Category.TOPS, SearchOrder.LOWEST_PRICE).get();
     });
     assertEquals(DatabaseException.class, ex.getCause().getClass());
   }
@@ -133,10 +135,10 @@ public class ProductSearchServiceTest {
   public void getHighestPricedByCateogrySuccess() throws Exception {
     ProductDto highestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(2000).build();
     
-    when(productRepository.getHighestPricedBy(any(Category.class)))
+    when(productRepository.findBy(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
         .thenReturn(Optional.of(highestProduct));
     
-    Optional<ProductDto> product = productSearchService.getHighestPricedBy(Category.TOPS).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.HIGHEST_PRICE).get();
 
     assertNotNull(product);
     assertEquals(highestProduct, product.get());
@@ -146,11 +148,11 @@ public class ProductSearchServiceTest {
   @DisplayName("카테고리 최고가격 검색 실패 - DB 에러")
   public void getHighestPricedByCateogryFailDbError() throws Exception {
     
-    when(productRepository.getHighestPricedBy(any(Category.class)))
+    when(productRepository.findBy(any(Category.class), any(SearchOrder.class)))
         .thenThrow(new DatabaseException());
     
     ExecutionException ex = assertThrows(ExecutionException.class, () -> {
-      productSearchService.getHighestPricedBy(Category.TOPS).get();
+      productSearchService.searchCategory(Category.TOPS, SearchOrder.HIGHEST_PRICE).get();
     });
     assertEquals(DatabaseException.class, ex.getCause().getClass());
   }

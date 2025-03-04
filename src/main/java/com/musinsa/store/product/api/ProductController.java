@@ -16,6 +16,7 @@ import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductSearchService;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
+import com.musinsa.store.product.domain.dto.SearchOrder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +35,10 @@ public class ProductController {
     CategoryProductSetPayload lowestPayload = null;
 
     if(singleBrand) {
-      ProductSet productSet = productSearchService.getLowestPricedSetForSingleBrand();
+      ProductSet productSet = productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
       lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
-      ProductSet productSet = productSearchService.getLowestPricedSet();
+      ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
       lowestPayload = CategoryProductSetPayload.from(productSet);
     }
 
@@ -63,8 +64,10 @@ public class ProductController {
     CategoryProductSetPayload lowestPayload = null;
     CategoryProductSetPayload highestPayload = null;
 
-    CompletableFuture<Optional<ProductDto>> lowestProduct = productSearchService.getLowestPricedBy(category);
-    CompletableFuture<Optional<ProductDto>> highestProduct = productSearchService.getHighestPricedBy(category);
+    CompletableFuture<Optional<ProductDto>> lowestProduct = productSearchService
+        .searchCategory(category, SearchOrder.LOWEST_PRICE);
+    CompletableFuture<Optional<ProductDto>> highestProduct = productSearchService
+        .searchCategory(category, SearchOrder.HIGHEST_PRICE);
 
     try {
       lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().get());
