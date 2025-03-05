@@ -19,3 +19,7 @@ logging:
   level:
     root: info
     com.musinsa.store: debug
+
+cache:
+  active: true
+  ttl: 60
