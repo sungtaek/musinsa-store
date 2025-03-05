@@ -8,9 +8,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.musinsa.store.common.cache.CacheStorage;
+import com.musinsa.store.common.event.BrandEvent;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
 import com.musinsa.store.product.domain.dto.SearchOrder;
@@ -43,9 +45,9 @@ public class ProductSearchService {
 
   public ProductSet searchSet(SearchOrder order) {
     log.info("search set by {}", order);
-    String cacheKey = String.format("searchSet-%s", order);
 
     if (cacheProperties.active) {
+      String cacheKey = String.format("searchSet-%s", order);
       return useCache(cacheKey, ProductSet.class, () -> {
         return productRepository.findSet(order);
       });
@@ -56,9 +58,9 @@ public class ProductSearchService {
 
   public ProductSet searchSetForSingleBrand(SearchOrder order) {
     log.info("search set for single brand by {}", order);
-    String cacheKey = String.format("searchSetForSingleBrand-%s", order);
 
     if (cacheProperties.active) {
+      String cacheKey = String.format("searchSetForSingleBrand-%s", order);
       return useCache(cacheKey, ProductSet.class, () -> {
         return productRepository.findSetForSingleBrand(order);
       });
@@ -71,9 +73,9 @@ public class ProductSearchService {
   public CompletableFuture<Optional<ProductDto>> searchCategory(Category category, SearchOrder order) {
     return CompletableFuture.supplyAsync(() -> {
       log.info("search category({}) by {}", category, order);
-      String cacheKey = String.format("searchCategory-%s-%s", category, order);
 
       if (cacheProperties.active) {
+        String cacheKey = String.format("searchCategory-%s-%s", category, order);
         return useCache(cacheKey, Optional.class, () -> {
           return productRepository.findBy(category, order);
         });
@@ -102,7 +104,11 @@ public class ProductSearchService {
         });
   }
 
-  public void clearCache() {
+  @EventListener
+  public void onEvent(BrandEvent brandEvent) {
+    log.info("receive event{}, clear cache", brandEvent);
+
+    // clear cache
     synchronized(usingCacheKeys) {
       List<String> cacheKeys = usingCacheKeys.stream().toList();
       usingCacheKeys.clear();

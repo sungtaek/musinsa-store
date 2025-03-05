@@ -2,9 +2,11 @@ package com.musinsa.store.product.domain;
 
 import java.util.Optional;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.musinsa.store.common.dto.Page;
+import com.musinsa.store.common.event.BrandEvent;
 import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.exception.InvalidBrandException;
 
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BrandService {
   private final BrandRepository brandRepository;
+  private final ApplicationEventPublisher eventPublisher;
 
   public Page<BrandDto> list(int page, int size) {
     log.info("list: page({}) size({})", page, size);
@@ -37,7 +40,9 @@ public class BrandService {
       throw new InvalidBrandException("Brand should have one product per categories");
     }
 
-    return brandRepository.save(BrandDto.from(brand));
+    brandDto = brandRepository.save(BrandDto.from(brand));
+    eventPublisher.publishEvent(BrandEvent.CREATED);
+    return brandDto;
   }
 
   public Optional<BrandDto> get(Long id) {
@@ -68,7 +73,9 @@ public class BrandService {
       if (!curBrand.hasSameProducts(brand)) {
         throw new InvalidBrandException("Product set is different from the current, please check the product's id");
       }
-      return Optional.of(brandRepository.save(BrandDto.from(brand)));
+      brandDto = brandRepository.save(BrandDto.from(brand));
+      eventPublisher.publishEvent(BrandEvent.UPDATED);
+      return Optional.of(brandDto);
     } else {
       return Optional.empty();
     }
@@ -79,6 +86,7 @@ public class BrandService {
     log.info("delete: {}", id);
 
     brandRepository.delete(id);
+    eventPublisher.publishEvent(BrandEvent.DELETED);
   }
 
 }
