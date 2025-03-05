@@ -56,6 +56,24 @@ clean {
     delete file('src/main/generated')
 }
 
+tasks.register('unitTest', Test) {
+    description = 'Run unit tests'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    exclude '**/com/musinsa/store/integration/**'
+		useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Run integration tests'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/com/musinsa/store/integration/**'
+		useJUnitPlatform()
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
