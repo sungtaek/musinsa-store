@@ -7,7 +7,7 @@ import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BrandPayload {
   private Long id;
-  @NotEmpty
+  @NotBlank
   private String name;
   @NotNull
   @Valid
