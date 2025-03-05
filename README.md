@@ -30,12 +30,12 @@
   |H|10,800|6,300|3,100|9,700|2,100|1,600|2,000|2,000|
   |I|11,400|6,700|3,200|9,500|2,400|1,700|1,700|2,400|
 
-- 구현 API
-  1. 카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회하는 API  
-  2. 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와  
+- 구현 API  
+  * 카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회하는 API  
+  * 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와  
     카테고리의 상품가격, 총액을 조회하는 API  
-  3. 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회하는 API  
-  4. 브랜드 및 상품을 추가 / 업데이트 / 삭제하는 API  
+  * 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회하는 API  
+  * 브랜드 및 상품을 추가 / 업데이트 / 삭제하는 API  
 
 ## Development Enviroment
 - Java 17
@@ -76,12 +76,13 @@
 │   └── cache/              // Cache 컴포넌트
 │
 ├── product/              // 상품 기능 관련 패키지
-│   ├── api/                // 상품/브랜드 API Controller
+│   ├── api/                // API Controller
 │   │   └── dto/              // API DTO
-│   ├── domain/             // 상품/브랜드 도메인 (Usecase 및 도메인 Entity)
+│   ├── domain/             // Usecase 및 도메인 Entity
 │   │   └── dto/              // 도메인 DTO
-│   └── repository/         // 상품/브랜드 DAO
-│       └── entity/           // 영속 Entity
+│   ├── repository/         // DB Repository
+│   │   └── entity/           // 영속 Entity
+│   └── exception/          // 기능 특화 exception
 │
 └── StoreApplication      // main application
 ```
@@ -94,10 +95,17 @@
 ## Configuration
 - application.yml
 ```
-# 검색결과 cache 설정
+server:
+  port: 8080      # binding port
+
+logging:
+  level:          # log level
+    root: info
+    com.musinsa.store: debug
+
 cache:
-  active: true  # cache 사용 여부
-  ttl: 60       # cache ttl (sec)
+  active: true    # 검색 cache 사용 여부
+  ttl: 60         # 검색 cache ttl (sec)
 ```
 
 ## Database Schema
