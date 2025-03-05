@@ -8,8 +8,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.musinsa.store.common.cache.CacheStorage;
 import com.musinsa.store.common.event.BrandEvent;
@@ -104,7 +104,7 @@ public class ProductSearchService {
         });
   }
 
-  @EventListener
+  @TransactionalEventListener
   public void onEvent(BrandEvent brandEvent) {
     log.info("receive event{}, clear cache", brandEvent);
 
