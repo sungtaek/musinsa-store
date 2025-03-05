@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.musinsa.store.common.dto.ResponsePayload;
 import com.musinsa.store.product.api.dto.CategoryProductSetPayload;
+import com.musinsa.store.product.api.dto.ProductCategoryPrice;
+import com.musinsa.store.product.api.dto.ProductSetPrice;
 import com.musinsa.store.product.api.dto.ResultProductSetPayload;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductSearchService;
@@ -28,17 +30,22 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductController {
   private final ProductSearchService productSearchService;
   
-  @GetMapping("/lowest-set")
-  public ResponsePayload<ResultProductSetPayload> getLowestPricedSet(
+  @GetMapping("/set")
+  public ResponsePayload<ResultProductSetPayload> getSet(
+      @RequestParam(value = "price", defaultValue = "LOWEST") ProductSetPrice price,
       @RequestParam(value = "singleBrand", defaultValue = "false") Boolean singleBrand) {
-    log.info("get lowest priced set: singleBrand({})", singleBrand);
+    log.info("get set: price({}) singleBrand({})", price, singleBrand);
     CategoryProductSetPayload lowestPayload = null;
 
+    SearchOrder searchOrder = (price.isHighest())
+        ? SearchOrder.HIGHEST_PRICE
+        : SearchOrder.LOWEST_PRICE;
+
     if(singleBrand) {
-      ProductSet productSet = productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
+      ProductSet productSet = productSearchService.searchSetForSingleBrand(searchOrder);
       lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
-      ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+      ProductSet productSet = productSearchService.searchSet(searchOrder);
       lowestPayload = CategoryProductSetPayload.from(productSet);
     }
 
@@ -57,21 +64,32 @@ public class ProductController {
         .orElse(null);
   }
 
-  @GetMapping("/lowest-highest-category")
-  public ResponsePayload<ResultProductSetPayload> getLowestHighestPricedCategory(
-      @RequestParam(value = "category") Category category) throws Throwable {
+  @GetMapping("/by-category")
+  public ResponsePayload<ResultProductSetPayload> getOne(
+      @RequestParam(value = "category") Category category,
+      @RequestParam(value = "price", defaultValue = "LOWEST") ProductCategoryPrice price) throws Throwable {
     log.info("get lowest/highest priced: category({})", category);
+
+    CompletableFuture<Optional<ProductDto>> lowestProduct = null;
+    CompletableFuture<Optional<ProductDto>> highestProduct = null;
+    if (price.isLowest()) {
+      lowestProduct = productSearchService
+          .searchCategory(category, SearchOrder.LOWEST_PRICE);
+    }
+    if (price.isHighest()) {
+      highestProduct = productSearchService
+          .searchCategory(category, SearchOrder.HIGHEST_PRICE);
+    }
+
     CategoryProductSetPayload lowestPayload = null;
     CategoryProductSetPayload highestPayload = null;
-
-    CompletableFuture<Optional<ProductDto>> lowestProduct = productSearchService
-        .searchCategory(category, SearchOrder.LOWEST_PRICE);
-    CompletableFuture<Optional<ProductDto>> highestProduct = productSearchService
-        .searchCategory(category, SearchOrder.HIGHEST_PRICE);
-
     try {
-      lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().orElse(null));
-      highestPayload = CategoryProductSetPayload.from(highestProduct.get().orElse(null));
+      if (lowestProduct != null) {
+        lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().orElse(null));
+      }
+      if (highestProduct != null) {
+        highestPayload = CategoryProductSetPayload.from(highestProduct.get().orElse(null));
+      }
     } catch (Exception ex) {
       throwUnwrapedException(ex);
     }

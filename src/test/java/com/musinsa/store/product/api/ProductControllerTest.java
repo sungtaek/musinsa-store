@@ -77,7 +77,35 @@ public class ProductControllerTest {
                 .price(PRODUCT_PRICE)
                 .build()));
 
-    mockMvc.perform(get("/api/v1/products/lowest-set"))
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
+        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(1)))
+        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("최고가격 세트 조회 성공")
+  public void getHighestPricedSetSuccess() throws Exception {
+
+    when(productSearchService.searchSet(eq(SearchOrder.HIGHEST_PRICE)))
+        .thenReturn(ProductSet.of(
+            ProductDto.builder()
+                .id(PRODUCT_ID)
+                .brandId(BRAND_ID)
+                .brandName(BRAND_NAME)
+                .category(PRODUCT_CATEGORY)
+                .price(PRODUCT_PRICE)
+                .build()));
+
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "HIGHEST"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
@@ -96,7 +124,8 @@ public class ProductControllerTest {
     when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
         .thenReturn(ProductSet.of());
 
-    mockMvc.perform(get("/api/v1/products/lowest-set"))
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
@@ -112,7 +141,8 @@ public class ProductControllerTest {
     when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
         .thenThrow(new InternalException());
 
-    mockMvc.perform(get("/api/v1/products/lowest-set"))
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.INTERNAL_ERROR.getCode())))
@@ -133,7 +163,37 @@ public class ProductControllerTest {
                 .price(PRODUCT_PRICE)
                 .build()));
 
-    mockMvc.perform(get("/api/v1/products/lowest-set")
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST")
+        .param("singleBrand", "true"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
+        .andExpect(jsonPath("$.data.lowestPrice.brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(1)))
+        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.lowestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("단일 브랜드 최고가격 세트 조회 성공")
+  public void getHighestPricedSetForSingleBrandSuccess() throws Exception {
+
+    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.HIGHEST_PRICE)))
+        .thenReturn(ProductSet.of(
+            ProductDto.builder()
+                .id(PRODUCT_ID)
+                .brandId(BRAND_ID)
+                .brandName(BRAND_NAME)
+                .category(PRODUCT_CATEGORY)
+                .price(PRODUCT_PRICE)
+                .build()));
+
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "HIGHEST")
         .param("singleBrand", "true"))
         .andDo(print())
         .andExpect(status().isOk())
@@ -154,7 +214,8 @@ public class ProductControllerTest {
     when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
         .thenReturn(ProductSet.of());
 
-    mockMvc.perform(get("/api/v1/products/lowest-set")
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST")
         .param("singleBrand", "true"))
         .andDo(print())
         .andExpect(status().isOk())
@@ -171,7 +232,8 @@ public class ProductControllerTest {
     when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
         .thenThrow(new InternalException());
 
-    mockMvc.perform(get("/api/v1/products/lowest-set")
+    mockMvc.perform(get("/api/v1/products/set")
+        .param("price", "LOWEST")
         .param("singleBrand", "true"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
@@ -200,8 +262,9 @@ public class ProductControllerTest {
             .price(PRODUCT2_PRICE)
             .build())));
 
-    mockMvc.perform(get("/api/v1/products/lowest-highest-category")
-        .param("category", PRODUCT_CATEGORY.toString()))
+    mockMvc.perform(get("/api/v1/products/by-category")
+        .param("category", PRODUCT_CATEGORY.toString())
+        .param("price", "LOWEST_HIGHEST"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
@@ -226,8 +289,9 @@ public class ProductControllerTest {
     when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
         .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-    mockMvc.perform(get("/api/v1/products/lowest-highest-category")
-        .param("category", PRODUCT_CATEGORY.toString()))
+    mockMvc.perform(get("/api/v1/products/by-category")
+        .param("category", PRODUCT_CATEGORY.toString())
+        .param("price", "LOWEST_HIGHEST"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
@@ -241,7 +305,7 @@ public class ProductControllerTest {
   @DisplayName("카테코리 최저/최고가격 실패 - 필수 param 누락")
   public void getLowestHighestPricedCategoryFailMissingParam() throws Exception {
 
-    mockMvc.perform(get("/api/v1/products/lowest-highest-category"))
+    mockMvc.perform(get("/api/v1/products/by-category"))
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.INVALID_PARAMETER.getCode())))
@@ -255,8 +319,9 @@ public class ProductControllerTest {
     when(productSearchService.searchCategory(any(Category.class), any(SearchOrder.class)))
         .thenReturn(CompletableFuture.failedFuture(new InternalException()));
 
-    mockMvc.perform(get("/api/v1/products/lowest-highest-category")
-        .param("category", PRODUCT_CATEGORY.toString()))
+    mockMvc.perform(get("/api/v1/products/by-category")
+        .param("category", PRODUCT_CATEGORY.toString())
+        .param("price", "LOWEST_HIGHEST"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.INTERNAL_ERROR.getCode())))
