@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import com.musinsa.store.common.cache.CacheStorage;
@@ -14,6 +15,10 @@ import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
 import com.musinsa.store.product.domain.dto.SearchOrder;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,25 +28,43 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductSearchService {
   private final CacheStorage cacheStorage;
   private final ProductRepository productRepository;
+  private final CacheProperties cacheProperties;
   private final Set<String> usingCacheKeys = new HashSet<>();
-  private final Integer cacheTtl = 0;
-  
+
+  @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @ConfigurationProperties("jwt")
+  public static class CacheProperties {
+    private Boolean active;
+    private Integer ttl;
+  }
+
   public ProductSet searchSet(SearchOrder order) {
     log.info("search set by {}", order);
     String cacheKey = String.format("searchSet-{}", order);
 
-    return useCache(cacheKey, ProductSet.class, () -> {
+    if (cacheProperties.active) {
+      return useCache(cacheKey, ProductSet.class, () -> {
+        return productRepository.findSet(order);
+      });
+    } else {
       return productRepository.findSet(order);
-    });
+    }
   }
 
   public ProductSet searchSetForSingleBrand(SearchOrder order) {
     log.info("search set for single brand by {}", order);
     String cacheKey = String.format("searchSetForSingleBrand-{}", order);
 
-    return useCache(cacheKey, ProductSet.class, () -> {
+    if (cacheProperties.active) {
+      return useCache(cacheKey, ProductSet.class, () -> {
+        return productRepository.findSetForSingleBrand(order);
+      });
+    } else {
       return productRepository.findSetForSingleBrand(order);
-    });
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -50,9 +73,13 @@ public class ProductSearchService {
       log.info("search category({}) by {}", category, order);
       String cacheKey = String.format("searchCategory-{}-{}", category, order);
 
-      return useCache(cacheKey, Optional.class, () -> {
+      if (cacheProperties.active) {
+        return useCache(cacheKey, Optional.class, () -> {
+          return productRepository.findBy(category, order);
+        });
+      } else {
         return productRepository.findBy(category, order);
-      });
+      }
     });
   }
 
@@ -63,7 +90,7 @@ public class ProductSearchService {
           CompletableFuture.runAsync(() -> {
             synchronized (usingCacheKeys) {
               usingCacheKeys.add(key);
-              cacheStorage.put(key, supplier.get(), cacheTtl);
+              cacheStorage.put(key, supplier.get(), cacheProperties.ttl);
             }
           });
           return value;
