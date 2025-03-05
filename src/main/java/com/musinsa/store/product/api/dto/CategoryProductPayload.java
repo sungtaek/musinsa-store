@@ -16,6 +16,9 @@ public class CategoryProductPayload {
   private Integer price;
 
   public static CategoryProductPayload from(ProductDto product) {
+    if (product == null) {
+      return null;
+    }
     return CategoryProductPayload.builder()
         .category(product.getCategory())
         .brandName(product.getBrandName())

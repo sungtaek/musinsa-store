@@ -54,7 +54,7 @@ public class ProductController {
         .filter(p -> p.getBrandName() != null)
         .findFirst()
         .map(ProductDto::getBrandName)
-        .get();
+        .orElse(null);
   }
 
   @GetMapping("/lowest-highest-category")
@@ -70,8 +70,8 @@ public class ProductController {
         .searchCategory(category, SearchOrder.HIGHEST_PRICE);
 
     try {
-      lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().get());
-      highestPayload = CategoryProductSetPayload.from(highestProduct.get().get());
+      lowestPayload = CategoryProductSetPayload.from(lowestProduct.get().orElse(null));
+      highestPayload = CategoryProductSetPayload.from(highestProduct.get().orElse(null));
     } catch (Exception ex) {
       throwUnwrapedException(ex);
     }

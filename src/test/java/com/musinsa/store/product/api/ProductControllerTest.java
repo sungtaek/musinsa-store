@@ -90,6 +90,22 @@ public class ProductControllerTest {
   }
 
   @Test
+  @DisplayName("최저가격 세트 조회 성공 - 빈상품")
+  public void getLowestPricedSetSuccessEmpty() throws Exception {
+
+    when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
+        .thenReturn(ProductSet.of());
+
+    mockMvc.perform(get("/api/v1/products/lowest-set"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
+        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(0)))
+        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(0)))
+        .andReturn();
+  }
+
+  @Test
   @DisplayName("최저가격 세트 조회 실패 - Service 에러")
   public void getLowestPricedSetFailServiceError() throws Exception {
 
@@ -128,6 +144,23 @@ public class ProductControllerTest {
         .andExpect(jsonPath("$.data.lowestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
         .andExpect(jsonPath("$.data.lowestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
         .andExpect(jsonPath("$.data.lowestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("단일 브랜드 최저가격 세트 조회 성공 - 빈상품")
+  public void getLowestPricedSetForSingleBrandSuccessEmpty() throws Exception {
+
+    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+        .thenReturn(ProductSet.of());
+
+    mockMvc.perform(get("/api/v1/products/lowest-set")
+        .param("singleBrand", "true"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
+        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(0)))
+        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(0)))
         .andReturn();
   }
 
@@ -181,6 +214,26 @@ public class ProductControllerTest {
         .andExpect(jsonPath("$.data.highestPrice.products.[0].category", equalTo(PRODUCT2_CATEGORY.toString())))
         .andExpect(jsonPath("$.data.highestPrice.products.[0].brandName", equalTo(BRAND2_NAME)))
         .andExpect(jsonPath("$.data.highestPrice.products.[0].price", equalTo(PRODUCT2_PRICE)))
+        .andReturn();
+  }
+
+  @Test
+  @DisplayName("카테코리 최저/최고가격 조회 성공 - 빈상품")
+  public void getLowestHighestPricedCategorySuccessEmpty() throws Exception {
+
+    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
+        .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
+        .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
+
+    mockMvc.perform(get("/api/v1/products/lowest-highest-category")
+        .param("category", PRODUCT_CATEGORY.toString()))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
+        .andExpect(jsonPath("$.data.category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(0)))
+        .andExpect(jsonPath("$.data.highestPrice.products", hasSize(0)))
         .andReturn();
   }
 

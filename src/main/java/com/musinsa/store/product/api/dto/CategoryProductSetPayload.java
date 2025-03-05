@@ -19,11 +19,14 @@ public class CategoryProductSetPayload {
 
   public static CategoryProductSetPayload from(ProductDto product) {
     return CategoryProductSetPayload.builder()
-        .products(List.of(CategoryProductPayload.from(product)))
+        .products(product != null ? List.of(CategoryProductPayload.from(product)) : List.of())
         .build();
   }
 
   public static CategoryProductSetPayload from(ProductSet productSet) {
+    if (productSet == null) {
+      return null;
+    }
     return CategoryProductSetPayload.builder()
         .products(productSet.stream()
             .map(CategoryProductPayload::from)

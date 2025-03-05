@@ -128,7 +128,7 @@ public class QJpaProductRepository implements ProductRepository {
       return Optional.ofNullable(queryFactory
           .selectFrom(product)
           .where(product.category.eq(category))
-          .orderBy(priceOrder)
+          .orderBy(priceOrder, product.id.desc())
           .fetchFirst()).map(ProductEntity::toProduct);
     } catch (Exception ex) {
       throw new DatabaseException(ex);
