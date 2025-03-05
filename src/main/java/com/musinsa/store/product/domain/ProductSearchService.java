@@ -35,7 +35,7 @@ public class ProductSearchService {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  @ConfigurationProperties("jwt")
+  @ConfigurationProperties("cache")
   public static class CacheProperties {
     private Boolean active;
     private Integer ttl;
@@ -43,7 +43,7 @@ public class ProductSearchService {
 
   public ProductSet searchSet(SearchOrder order) {
     log.info("search set by {}", order);
-    String cacheKey = String.format("searchSet-{}", order);
+    String cacheKey = String.format("searchSet-%s", order);
 
     if (cacheProperties.active) {
       return useCache(cacheKey, ProductSet.class, () -> {
@@ -56,7 +56,7 @@ public class ProductSearchService {
 
   public ProductSet searchSetForSingleBrand(SearchOrder order) {
     log.info("search set for single brand by {}", order);
-    String cacheKey = String.format("searchSetForSingleBrand-{}", order);
+    String cacheKey = String.format("searchSetForSingleBrand-%s", order);
 
     if (cacheProperties.active) {
       return useCache(cacheKey, ProductSet.class, () -> {
@@ -71,7 +71,7 @@ public class ProductSearchService {
   public CompletableFuture<Optional<ProductDto>> searchCategory(Category category, SearchOrder order) {
     return CompletableFuture.supplyAsync(() -> {
       log.info("search category({}) by {}", category, order);
-      String cacheKey = String.format("searchCategory-{}-{}", category, order);
+      String cacheKey = String.format("searchCategory-%s-%s", category, order);
 
       if (cacheProperties.active) {
         return useCache(cacheKey, Optional.class, () -> {
@@ -85,7 +85,12 @@ public class ProductSearchService {
 
   private <T> T useCache(String key, Class<T> clazz, Supplier<T> supplier) {
     return cacheStorage.get(key, clazz)
+        .map(v -> {
+          log.debug("cache hit: {}", key);
+          return v;
+        })
         .orElseGet(() -> {
+          log.debug("cache miss: {}", key);
           final T value = supplier.get();
           CompletableFuture.runAsync(() -> {
             synchronized (usingCacheKeys) {
