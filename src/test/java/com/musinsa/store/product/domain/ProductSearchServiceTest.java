@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -21,6 +23,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.musinsa.store.common.cache.CacheStorage;
+import com.musinsa.store.common.event.BrandEvent;
 import com.musinsa.store.common.exception.DatabaseException;
 import com.musinsa.store.product.domain.ProductSearchService.CacheProperties;
 import com.musinsa.store.product.domain.dto.ProductDto;
@@ -249,6 +252,29 @@ public class ProductSearchServiceTest {
 
     assertNotNull(product);
     assertEquals(highestProduct, product.get());
+  }
+
+  @Test
+  @DisplayName("BrandEvent로 인한 Cache 삭제")
+  public void clearCache() {
+    ProductSet lowestProducts = ProductSet.of(
+      ProductDto.builder().brandName(BRAND_B).category(Category.ACCESSORIES).price(1000).build());
+
+    cacheProperties.setActive(true);
+    
+    when(cacheStorage.get(anyString(), any()))
+        .thenReturn(Optional.empty());
+    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
+        .thenReturn(lowestProducts);
+    
+    ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+
+    assertNotNull(productSet);
+    assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
+
+    productSearchService.onEvent(BrandEvent.CREATED);
+
+    verify(cacheStorage, times(1)).remove(any(String.class));
   }
 
 }

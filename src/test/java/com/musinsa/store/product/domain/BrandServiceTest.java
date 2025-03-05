@@ -6,7 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -17,7 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
+import com.musinsa.store.common.event.BrandEvent;
 import com.musinsa.store.common.exception.DatabaseException;
 import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.domain.dto.ProductDto;
@@ -32,6 +37,9 @@ public class BrandServiceTest {
 
   @Mock
   private BrandRepository brandRepository;
+
+  @Mock
+  private ApplicationEventPublisher applicationEventPublisher;
 
   private static final Long BRAND_ID = 1L;
   private static final String BRAND_NAME = "BRAND_A";
@@ -91,6 +99,8 @@ public class BrandServiceTest {
 
     assertNotNull(brand);
     assertEquals(BRAND_ID, brand.getId());
+    verify(applicationEventPublisher, times(1))
+        .publishEvent(eq(BrandEvent.CREATED));
   }
 
   @Test
@@ -183,6 +193,8 @@ public class BrandServiceTest {
 
     assertNotNull(updatedBrand);
     assertEquals(brand, updatedBrand);
+    verify(applicationEventPublisher, times(1))
+        .publishEvent(eq(BrandEvent.UPDATED));
   }
 
   @Test
@@ -277,6 +289,9 @@ public class BrandServiceTest {
   public void deleteSuccess() {
     
     brandService.delete(BRAND_ID);
+
+    verify(applicationEventPublisher, times(1))
+        .publishEvent(eq(BrandEvent.DELETED));
   }
 
   @Test

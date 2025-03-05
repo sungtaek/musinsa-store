@@ -106,14 +106,17 @@ public class ProductSearchService {
 
   @TransactionalEventListener
   public void onEvent(BrandEvent brandEvent) {
-    log.info("receive event{}, clear cache", brandEvent);
+    log.info("receive event({})", brandEvent);
 
     // clear cache
-    synchronized(usingCacheKeys) {
-      List<String> cacheKeys = usingCacheKeys.stream().toList();
-      usingCacheKeys.clear();
-      for (String cacheKey : cacheKeys) {
-        cacheStorage.remove(cacheKey);
+    if (cacheProperties.active) {
+      log.info("clear cache");
+      synchronized (usingCacheKeys) {
+        List<String> cacheKeys = usingCacheKeys.stream().toList();
+        usingCacheKeys.clear();
+        for (String cacheKey : cacheKeys) {
+          cacheStorage.remove(cacheKey);
+        }
       }
     }
   }
