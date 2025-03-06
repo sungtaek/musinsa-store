@@ -140,6 +140,91 @@ Base URLs:
 
 파라미터에 따라 최저/최고, 전체/단일 브랜드에 대한 상품을 조회합니다.
 
+<h4 id="get-products-set-parameters">Parameters</h4>
+
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|price|query|string(enum)<br>LOWEST: 최저가<br>HIGHEST: 최고가|false|LOWEST|최저/최고 가격|
+|singleBrand|query|boolean|false|false|단일 브랜드 여부|
+
+<h4 id="register-responses">Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseProductSet](#response-product-set)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseProductSet](#response-product-set)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseProductSet](#response-product-set)|
+
+<h5 id="response-product-set">ResponseProductSet</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[ResultProductSet](#result-product-set)|false|product set|
+
+
+> Example
+
+```json
+> GET http://localhost:8080/api/v1/products/set?price=LOWEST&singleBrand=false
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": {
+    "lowestPrice": {
+      "products": [
+        {
+         "category": "BAGS",
+         "brandName": "A",
+         "price": 2000
+        },
+        {
+          "category": "TOPS",
+          "brandName": "C",
+          "price": 10000
+        },
+        {
+          "category": "PANTS",
+          "brandName": "D",
+          "price": 3000
+        },
+        {
+          "category": "HATS",
+          "brandName": "D",
+          "price": 1500
+        },
+        {
+          "category": "OUTER",
+          "brandName": "E",
+          "price": 5000
+        },
+        {
+          "category": "ACCESSORIES",
+          "brandName": "F",
+          "price": 1900
+        },
+        {
+          "category": "SNEAKERS",
+          "brandName": "G",
+          "price": 9000
+        },
+        {
+          "category": "SOCKS",
+          "brandName": "I",
+          "price": 1700
+        }
+      ],
+      "totalPrice": 34100
+    }
+  }
+}
+
+```
+
+
 ### Get Product By Category API
 `GET /api/v1/products/by-category`
 
@@ -183,3 +268,29 @@ Base URLs:
 
 브랜드 id를 받아서 해당 브랜드 및 상품 정보를 삭제 합니다.
 
+
+### Data Schema
+
+<h5 id="result-product-set">Result Product Set</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|category|string|false|카테고리명 (단일 카테고리 검색시)|
+|lowestPrice|[CategoryProductSet](#category-product-set)|false|최저가 세트 (최저가 검색시)|
+|highestPrice|[CategoryProductSet](#category-product-set)|false|최고가 세트 (최고가 검색시)|
+
+<h5 id="category-product-set">Category Product Set</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|bandName|string|false|브랜드명 (단일 브랜드 조회시)|
+|products|[[CategoryProduct](#category-product)]|true|상품 리스트|
+|totalPrice|integer|true|가격 총합|
+
+<h5 id="category-product">Category Product</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|category|string|true|카테고리|
+|bandName|string|true|브랜드명|
+|price|integer|true|가격|
