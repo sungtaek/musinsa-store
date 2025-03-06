@@ -64,14 +64,14 @@
 ```
 
 ### Web Frontend
-서버 구동 후, 하기 web page에서 테스트할 수 있습니다.
+서버 구동 후, 하기 web page에서 테스트할 수 있습니다.  
 https://sungtaek.github.io/musinsa-store
 
 #### 1. 구동한 서버 url을 넣고 login 합니다.
 ![로그인](./docs/musinsa_web_1.png)
 
 #### 2. 메뉴에 따라 상품 검색 및 브랜드/상품 관리를 할수 있습니다.
-![상품 조회](./docs/musinsa_web_2.png)
+![상품 조회](./docs/musinsa_web_.png)
 
 ## Package Structure
 
@@ -136,13 +136,6 @@ cache:
 
 ## API Specification
 
-Musinsa Store API Specification
-
-Base URLs:
-
-* <a href="http://localhost:8080">http://localhost:8080</a>
-
----
 ### Get Product Set API
 `GET /api/v1/products/set`
 
@@ -234,7 +227,7 @@ Base URLs:
 
 ```
 
-
+---
 ### Get Product By Category API
 `GET /api/v1/products/by-category`
 
@@ -248,7 +241,6 @@ Base URLs:
 |---|---|---|---|---|---|
 |category|query|[CategoryCode](#category-code)|true||카테고리 코드|
 |price|query|enum<br>LOWEST: 최저가<br>HIGHEST: 최고가<br>LOWEST_HIGHEST: 최저&최고가|false|LOWEST|최저/최고 가격|
-|singleBrand|query|boolean|false|false|단일 브랜드 여부|
 
 <h4>Responses</h4>
 
@@ -264,7 +256,7 @@ Base URLs:
 |---|---|---|---|
 |code|string|true|result code|
 |message|string|true|result message|
-|data|[ResultProductSet](#result-product-set)|false|product set|
+|data|[ResultProductSet](#result-product-set)|false|상품 set|
 
 
 > Example
@@ -300,7 +292,7 @@ Base URLs:
 }
 ```
 
-
+---
 ### Get Brand List API
 `GET /api/v1/brands`
 
@@ -308,7 +300,76 @@ Base URLs:
 
 브랜드 리스트를 페이지 단위로 조회합니다.
 
+<h4>Parameters</h4>
 
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|page|query|integer|false|0|페이지 번호 (0부터시작)|
+|size|query|integer|false|20|페이지 크기|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseBrandList](#response-brand-list)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseBrandList](#response-brand-list)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseBrandList](#response-brand-list)|
+
+<h5 id="response-brand-list">Response Brand List</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[[Brand](#brand)]|true|브랜드 리스트|
+|page|integer|true|현재 page 번호|
+|size|integer|true|page 크기|
+|toalPage|integer|true|전체 page 수|
+
+
+> Example
+
+```json
+> GET http://localhost:8080/api/v1/brands?page=0&size=5
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": [
+    {
+      "id": 1,
+      "name": "A",
+      "products": []
+    },
+    {
+      "id": 2,
+      "name": "B",
+      "products": []
+    },
+    {
+      "id": 3,
+      "name": "C",
+      "products": []
+    },
+    {
+      "id": 4,
+      "name": "D",
+      "products": []
+    },
+    {
+      "id": 5,
+      "name": "E",
+      "products": []
+    }
+  ],
+  "page": 0,
+  "size": 5,
+  "totalPage": 2
+}
+```
+
+---
 ### Create Brand API
 `POST /api/v1/brands`
 
@@ -316,6 +377,125 @@ Base URLs:
 
 신규 브랜드 및 상품 정보를 받아서 생성합니다.
 
+<h4>Parameters</h4>
+
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|brand|body|[Brand](#brand)|true||생성할 브랜드|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseBrandCreate](#response-brand-create)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseBrandCreate](#response-brand-create)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseBrandCreate](#response-brand-create)|
+
+<h5 id="response-brand-create">Response Brand Create</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[Brand](#brand)|true|생성된 브랜드|
+
+
+> Example
+
+```json
+> POST http://localhost:8080/api/v1/brands
+{
+  "name": "Z",
+  "products": [
+    {
+      "category": "TOPS",
+      "price": 6000
+    },
+    {
+      "category": "OUTER",
+      "price": 8000
+    },
+    {
+      "category": "PANTS",
+      "price": 7000
+    },
+    {
+      "category": "SNEAKERS",
+      "price": 3000
+    },
+    {
+      "category": "BAGS",
+      "price": 3000
+    },
+    {
+      "category": "HATS",
+      "price": 1400
+    },
+    {
+      "category": "SOCKS",
+      "price": 800
+    },
+    {
+      "category": "ACCESSORIES",
+      "price": 1000
+    }
+  ]
+}
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": {
+    "id": 10,
+    "name": "Z",
+    "products": [
+      {
+        "id": 73,
+        "category": "TOPS",
+        "price": 6000
+      },
+      {
+        "id": 74,
+        "category": "OUTER",
+        "price": 8000
+      },
+      {
+        "id": 75,
+        "category": "PANTS",
+        "price": 7000
+      },
+      {
+        "id": 76,
+        "category": "SNEAKERS",
+        "price": 3000
+      },
+      {
+        "id": 77,
+        "category": "BAGS",
+        "price": 3000
+      },
+      {
+        "id": 78,
+        "category": "HATS",
+        "price": 1400
+      },
+      {
+        "id": 79,
+        "category": "SOCKS",
+        "price": 800
+      },
+      {
+        "id": 80,
+        "category": "ACCESSORIES",
+        "price": 1000
+      }
+    ]
+  }
+}
+```
+
+---
 ### Get Brand API
 `GET /api/v1/brands/{id}`
 
@@ -323,6 +503,89 @@ Base URLs:
 
 브랜드 id를 받아서 해당 브랜드 및 상품 정보를 조회합니다.
 
+<h4>Parameters</h4>
+
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|id|path|string|true||조회할 브랜드 id|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseBrandGet](#response-brand-get)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseBrandGet](#response-brand-get)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ResponseBrandGet](#response-brand-get)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseBrandGet](#response-brand-get)|
+
+<h5 id="response-brand-get">Response Brand Get</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[Brand](#brand)|true|조회된 브랜드|
+
+
+> Example
+
+```json
+> GET http://localhost:8080/api/v1/brands/10
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": {
+    "id": 10,
+    "name": "Z",
+    "products": [
+      {
+        "id": 73,
+        "category": "TOPS",
+        "price": 6000
+      },
+      {
+        "id": 74,
+        "category": "OUTER",
+        "price": 8000
+      },
+      {
+        "id": 75,
+        "category": "PANTS",
+        "price": 7000
+      },
+      {
+        "id": 76,
+        "category": "SNEAKERS",
+        "price": 3000
+      },
+      {
+        "id": 77,
+        "category": "BAGS",
+        "price": 3000
+      },
+      {
+        "id": 78,
+        "category": "HATS",
+        "price": 1400
+      },
+      {
+        "id": 79,
+        "category": "SOCKS",
+        "price": 800
+      },
+      {
+        "id": 80,
+        "category": "ACCESSORIES",
+        "price": 1000
+      }
+    ]
+  }
+}
+```
+
+---
 ### Update Brand API
 `POST /api/v1/brands/{id}`
 
@@ -330,6 +593,141 @@ Base URLs:
 
 브랜드 id 와 브랜드 정보를 받아서 해당 브랜드 및 상품 정보를 업데이트 합니다.
 
+<h4>Parameters</h4>
+
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|id|path|string|true||수정할 브랜드 id|
+|brand|body|[Brand](#brand)|true||수정할 브랜드|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseBrandUpdate](#response-brand-update)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseBrandUpdate](#response-brand-update)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Not Found|[ResponseBrandUpdate](#response-brand-update)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseBrandUpdate](#response-brand-update)|
+
+<h5 id="response-brand-update">Response Brand Update</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[Brand](#brand)|true|수정된 브랜드|
+
+
+> Example
+
+```json
+> POST http://localhost:8080/api/v1/brands/10
+{
+  "name": "ZZZ",
+  "products": [
+    {
+      "id": 73,
+      "category": "TOPS",
+      "price": 6100
+    },
+    {
+      "id": 74,
+      "category": "OUTER",
+      "price": 8100
+    },
+    {
+      "id": 75,
+      "category": "OUTER",
+      "category": "PANTS",
+      "price": 7100
+    },
+    {
+      "id": 76,
+      "category": "OUTER",
+      "category": "SNEAKERS",
+      "price": 3100
+    },
+    {
+      "id": 77,
+      "category": "OUTER",
+      "category": "BAGS",
+      "price": 3100
+    },
+    {
+      "id": 78,
+      "category": "OUTER",
+      "category": "HATS",
+      "price": 1400
+    },
+    {
+      "id": 79,
+      "category": "OUTER",
+      "category": "SOCKS",
+      "price": 800
+    },
+    {
+      "id": 80,
+      "category": "OUTER",
+      "category": "ACCESSORIES",
+      "price": 1100
+    }
+  ]
+}
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": {
+    "id": 10,
+    "name": "ZZZ",
+    "products": [
+      {
+        "id": 73,
+        "category": "TOPS",
+        "price": 6100
+      },
+      {
+        "id": 74,
+        "category": "OUTER",
+        "price": 8100
+      },
+      {
+        "id": 75,
+        "category": "PANTS",
+        "price": 7100
+      },
+      {
+        "id": 76,
+        "category": "SNEAKERS",
+        "price": 3100
+      },
+      {
+        "id": 77,
+        "category": "BAGS",
+        "price": 3100
+      },
+      {
+        "id": 78,
+        "category": "HATS",
+        "price": 1400
+      },
+      {
+        "id": 79,
+        "category": "SOCKS",
+        "price": 800
+      },
+      {
+        "id": 80,
+        "category": "ACCESSORIES",
+        "price": 1100
+      }
+    ]
+  }
+}
+```
+
+---
 ### Delete Brand API
 `DELETE /api/v1/brands/{id}`
 
@@ -337,7 +735,41 @@ Base URLs:
 
 브랜드 id를 받아서 해당 브랜드 및 상품 정보를 삭제 합니다.
 
+<h4>Parameters</h4>
 
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|id|path|string|true||삭제할 브랜드 id|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseBrandDelete](#response-brand-delete)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseBrandDelete](#response-brand-delete)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseBrandDelete](#response-brand-delete)|
+
+<h5 id="response-brand-delete">Response Brand Delete</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+
+
+> Example
+
+```json
+> DELETE http://localhost:8080/api/v1/brands/10
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+}
+```
+
+---
 ### Data Schema
 
 <h5 id="result-product-set">Result Product Set</h5>
@@ -362,6 +794,22 @@ Base URLs:
 |---|---|---|---|
 |category|[CategoryCode](#category-code)|true|카테고리 코드|
 |bandName|string|true|브랜드명|
+|price|integer|true|가격|
+
+<h5 id="brand">Brand</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|id|long|false|브랜드 id (조회 및 업데이트시 존재)|
+|name|string|true|브랜드명|
+|products|[[Product](#product)]|true|상품 리스트|
+
+<h5 id="product">Product</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|id|long|false|상품 id (조회 및 업데이트시 존재)|
+|category|[CategoryCode](#category-code)|true|카테고리 코드|
 |price|integer|true|가격|
 
 <h5 id="category-code">Category Code</h5>
