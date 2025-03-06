@@ -63,6 +63,16 @@
 # ./gradlew bootRun
 ```
 
+### Web Frontend
+서버 구동 후, 하기 web page에서 테스트할 수 있습니다.
+https://sungtaek.github.io/musinsa-store
+
+#### 1. 구동한 서버 url을 넣고 login 합니다.
+![로그인](./docs/musinsa_web_1.png)
+
+#### 2. 메뉴에 따라 상품 검색 및 브랜드/상품 관리를 할수 있습니다.
+![상품 조회](./docs/musinsa_web_2.png)
+
 ## Package Structure
 
 ```
