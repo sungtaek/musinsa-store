@@ -109,11 +109,11 @@ public class ProductControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
-        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.highestPrice.products", hasSize(1)))
+        .andExpect(jsonPath("$.data.highestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 
@@ -198,12 +198,12 @@ public class ProductControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code", equalTo(ResultCode.SUCCESS.getCode())))
-        .andExpect(jsonPath("$.data.lowestPrice.brandName", equalTo(BRAND_NAME)))
-        .andExpect(jsonPath("$.data.lowestPrice.products", hasSize(1)))
-        .andExpect(jsonPath("$.data.lowestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
-        .andExpect(jsonPath("$.data.lowestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.highestPrice.brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.highestPrice.products", hasSize(1)))
+        .andExpect(jsonPath("$.data.highestPrice.totalPrice", equalTo(PRODUCT_PRICE)))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].category", equalTo(PRODUCT_CATEGORY.toString())))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].brandName", equalTo(BRAND_NAME)))
+        .andExpect(jsonPath("$.data.highestPrice.products.[0].price", equalTo(PRODUCT_PRICE)))
         .andReturn();
   }
 

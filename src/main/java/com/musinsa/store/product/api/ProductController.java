@@ -35,7 +35,7 @@ public class ProductController {
       @RequestParam(value = "price", defaultValue = "LOWEST") ProductSetPrice price,
       @RequestParam(value = "singleBrand", defaultValue = "false") Boolean singleBrand) {
     log.info("get set: price({}) singleBrand({})", price, singleBrand);
-    CategoryProductSetPayload lowestPayload = null;
+    CategoryProductSetPayload productSetPayload = null;
 
     PriceOrder priceOrder = (price.isHighest())
         ? PriceOrder.HIGHEST
@@ -43,15 +43,16 @@ public class ProductController {
 
     if(singleBrand) {
       ProductSet productSet = productSearchService.searchSetForSingleBrand(priceOrder);
-      lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
+      productSetPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
       ProductSet productSet = productSearchService.searchSet(priceOrder);
-      lowestPayload = CategoryProductSetPayload.from(productSet);
+      productSetPayload = CategoryProductSetPayload.from(productSet);
     }
 
     return ResponsePayload.<ResultProductSetPayload>builder()
         .data(ResultProductSetPayload.builder()
-            .lowestPrice(lowestPayload)
+            .lowestPrice((priceOrder == PriceOrder.LOWEST) ? productSetPayload : null)
+            .highestPrice((priceOrder == PriceOrder.HIGHEST) ? productSetPayload : null)
             .build())
         .build();
   }
