@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Import;
 import com.musinsa.store.product.domain.dto.BrandDto;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 import com.musinsa.store.common.config.DatabaseConfig;
 import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.repository.entity.BrandEntity;
@@ -85,7 +85,7 @@ public class QJpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "I", 1700),
         new CategoryProduct(Category.ACCESSORIES, "F", 1900));
 
-    ProductSet products = qjpaProductRepository.findSet(SearchOrder.LOWEST_PRICE);
+    ProductSet products = qjpaProductRepository.findSet(PriceOrder.LOWEST);
     List<CategoryProduct> result = products.stream()
         .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
@@ -106,7 +106,7 @@ public class QJpaProductRepositoryTest {
         new CategoryProduct(Category.SOCKS, "D", 2400),
         new CategoryProduct(Category.ACCESSORIES, "D", 2000));
 
-    ProductSet products = qjpaProductRepository.findSetForSingleBrand(SearchOrder.LOWEST_PRICE);
+    ProductSet products = qjpaProductRepository.findSetForSingleBrand(PriceOrder.LOWEST);
     List<CategoryProduct> result = products.stream()
         .map(p -> new CategoryProduct(p.getCategory(), p.getBrandName(), p.getPrice()))
         .toList();
@@ -117,7 +117,7 @@ public class QJpaProductRepositoryTest {
   @Test
   @DisplayName("카테고리 최저가 검색")
   public void getLowestPricedByCategory() {
-    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, SearchOrder.LOWEST_PRICE);
+    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, PriceOrder.LOWEST);
 
     assertNotNull(product);
     assertEquals("A", product.get().getBrandName());
@@ -127,7 +127,7 @@ public class QJpaProductRepositoryTest {
   @Test
   @DisplayName("카테고리 최고가 검색")
   public void getHighestPricedByCategory() {
-    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, SearchOrder.HIGHEST_PRICE);
+    Optional<ProductDto> product = qjpaProductRepository.findBy(Category.BAGS, PriceOrder.HIGHEST);
 
     assertNotNull(product);
     assertEquals("D", product.get().getBrandName());

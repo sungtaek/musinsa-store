@@ -18,7 +18,7 @@ import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductSearchService;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,15 +37,15 @@ public class ProductController {
     log.info("get set: price({}) singleBrand({})", price, singleBrand);
     CategoryProductSetPayload lowestPayload = null;
 
-    SearchOrder searchOrder = (price.isHighest())
-        ? SearchOrder.HIGHEST_PRICE
-        : SearchOrder.LOWEST_PRICE;
+    PriceOrder priceOrder = (price.isHighest())
+        ? PriceOrder.HIGHEST
+        : PriceOrder.LOWEST;
 
     if(singleBrand) {
-      ProductSet productSet = productSearchService.searchSetForSingleBrand(searchOrder);
+      ProductSet productSet = productSearchService.searchSetForSingleBrand(priceOrder);
       lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
-      ProductSet productSet = productSearchService.searchSet(searchOrder);
+      ProductSet productSet = productSearchService.searchSet(priceOrder);
       lowestPayload = CategoryProductSetPayload.from(productSet);
     }
 
@@ -74,11 +74,11 @@ public class ProductController {
     CompletableFuture<Optional<ProductDto>> highestProduct = null;
     if (price.isLowest()) {
       lowestProduct = productSearchService
-          .searchCategory(category, SearchOrder.LOWEST_PRICE);
+          .searchCategory(category, PriceOrder.LOWEST);
     }
     if (price.isHighest()) {
       highestProduct = productSearchService
-          .searchCategory(category, SearchOrder.HIGHEST_PRICE);
+          .searchCategory(category, PriceOrder.HIGHEST);
     }
 
     CategoryProductSetPayload lowestPayload = null;

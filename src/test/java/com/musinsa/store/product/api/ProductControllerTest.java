@@ -31,7 +31,7 @@ import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductSearchService;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductControllerTest {
@@ -67,7 +67,7 @@ public class ProductControllerTest {
   @DisplayName("최저가격 세트 조회 성공")
   public void getLowestPricedSetSuccess() throws Exception {
 
-    when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSet(eq(PriceOrder.LOWEST)))
         .thenReturn(ProductSet.of(
             ProductDto.builder()
                 .id(PRODUCT_ID)
@@ -94,7 +94,7 @@ public class ProductControllerTest {
   @DisplayName("최고가격 세트 조회 성공")
   public void getHighestPricedSetSuccess() throws Exception {
 
-    when(productSearchService.searchSet(eq(SearchOrder.HIGHEST_PRICE)))
+    when(productSearchService.searchSet(eq(PriceOrder.HIGHEST)))
         .thenReturn(ProductSet.of(
             ProductDto.builder()
                 .id(PRODUCT_ID)
@@ -121,7 +121,7 @@ public class ProductControllerTest {
   @DisplayName("최저가격 세트 조회 성공 - 빈상품")
   public void getLowestPricedSetSuccessEmpty() throws Exception {
 
-    when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSet(eq(PriceOrder.LOWEST)))
         .thenReturn(ProductSet.of());
 
     mockMvc.perform(get("/api/v1/products/set")
@@ -138,7 +138,7 @@ public class ProductControllerTest {
   @DisplayName("최저가격 세트 조회 실패 - Service 에러")
   public void getLowestPricedSetFailServiceError() throws Exception {
 
-    when(productSearchService.searchSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSet(eq(PriceOrder.LOWEST)))
         .thenThrow(new InternalException());
 
     mockMvc.perform(get("/api/v1/products/set")
@@ -153,7 +153,7 @@ public class ProductControllerTest {
   @DisplayName("단일 브랜드 최저가격 세트 조회 성공")
   public void getLowestPricedSetForSingleBrandSuccess() throws Exception {
 
-    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSetForSingleBrand(eq(PriceOrder.LOWEST)))
         .thenReturn(ProductSet.of(
             ProductDto.builder()
                 .id(PRODUCT_ID)
@@ -182,7 +182,7 @@ public class ProductControllerTest {
   @DisplayName("단일 브랜드 최고가격 세트 조회 성공")
   public void getHighestPricedSetForSingleBrandSuccess() throws Exception {
 
-    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.HIGHEST_PRICE)))
+    when(productSearchService.searchSetForSingleBrand(eq(PriceOrder.HIGHEST)))
         .thenReturn(ProductSet.of(
             ProductDto.builder()
                 .id(PRODUCT_ID)
@@ -211,7 +211,7 @@ public class ProductControllerTest {
   @DisplayName("단일 브랜드 최저가격 세트 조회 성공 - 빈상품")
   public void getLowestPricedSetForSingleBrandSuccessEmpty() throws Exception {
 
-    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSetForSingleBrand(eq(PriceOrder.LOWEST)))
         .thenReturn(ProductSet.of());
 
     mockMvc.perform(get("/api/v1/products/set")
@@ -229,7 +229,7 @@ public class ProductControllerTest {
   @DisplayName("단일 브랜드 최저가격 세트 조회 실패 - Service 에러")
   public void getLowestPricedSetForSingleBrandFailServiceError() throws Exception {
 
-    when(productSearchService.searchSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchSetForSingleBrand(eq(PriceOrder.LOWEST)))
         .thenThrow(new InternalException());
 
     mockMvc.perform(get("/api/v1/products/set")
@@ -245,7 +245,7 @@ public class ProductControllerTest {
   @DisplayName("카테코리 최저/최고가격 조회 성공")
   public void getLowestHighestPricedCategorySuccess() throws Exception {
 
-    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchCategory(any(Category.class), eq(PriceOrder.LOWEST)))
         .thenReturn(CompletableFuture.completedFuture(Optional.of(ProductDto.builder()
             .id(PRODUCT_ID)
             .brandId(BRAND_ID)
@@ -253,7 +253,7 @@ public class ProductControllerTest {
             .category(PRODUCT_CATEGORY)
             .price(PRODUCT_PRICE)
             .build())));
-    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
+    when(productSearchService.searchCategory(any(Category.class), eq(PriceOrder.HIGHEST)))
         .thenReturn(CompletableFuture.completedFuture(Optional.of(ProductDto.builder()
             .id(PRODUCT2_ID)
             .brandId(BRAND2_ID)
@@ -284,9 +284,9 @@ public class ProductControllerTest {
   @DisplayName("카테코리 최저/최고가격 조회 성공 - 빈상품")
   public void getLowestHighestPricedCategorySuccessEmpty() throws Exception {
 
-    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
+    when(productSearchService.searchCategory(any(Category.class), eq(PriceOrder.LOWEST)))
         .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-    when(productSearchService.searchCategory(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
+    when(productSearchService.searchCategory(any(Category.class), eq(PriceOrder.HIGHEST)))
         .thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
     mockMvc.perform(get("/api/v1/products/by-category")
@@ -316,7 +316,7 @@ public class ProductControllerTest {
   @DisplayName("카테코리 최저/최고가격 실패 - Service 에러")
   public void getLowestHighestPricedCategoryFailServiceError() throws Exception {
 
-    when(productSearchService.searchCategory(any(Category.class), any(SearchOrder.class)))
+    when(productSearchService.searchCategory(any(Category.class), any(PriceOrder.class)))
         .thenReturn(CompletableFuture.failedFuture(new InternalException()));
 
     mockMvc.perform(get("/api/v1/products/by-category")

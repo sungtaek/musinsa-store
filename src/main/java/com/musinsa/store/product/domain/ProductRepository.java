@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 public interface ProductRepository {
-  ProductSet findSet(SearchOrder order);
-  ProductSet findSetForSingleBrand(SearchOrder order);
-  Optional<ProductDto> findBy(Category category, SearchOrder order);
+  ProductSet findSet(PriceOrder priceOrder);
+  ProductSet findSetForSingleBrand(PriceOrder priceOrder);
+  Optional<ProductDto> findBy(Category category, PriceOrder priceOrder);
 }

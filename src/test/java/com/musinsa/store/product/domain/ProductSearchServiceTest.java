@@ -28,7 +28,7 @@ import com.musinsa.store.common.exception.DatabaseException;
 import com.musinsa.store.product.domain.ProductSearchService.CacheProperties;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductSearchServiceTest {
@@ -64,10 +64,10 @@ public class ProductSearchServiceTest {
       ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
       ProductDto.builder().brandName(BRAND_B).category(Category.ACCESSORIES).price(1000).build());
     
-    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findSet(eq(PriceOrder.LOWEST)))
         .thenReturn(lowestProducts);
     
-    ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+    ProductSet productSet = productSearchService.searchSet(PriceOrder.LOWEST);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -77,11 +77,11 @@ public class ProductSearchServiceTest {
   @DisplayName("최저가격 세트 검색 실패 - DB 에러")
   public void getLowestPricedSetFailDbError() {
 
-    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findSet(eq(PriceOrder.LOWEST)))
         .thenThrow(new DatabaseException());
     
     assertThrows(DatabaseException.class, () -> {
-      productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+      productSearchService.searchSet(PriceOrder.LOWEST);
     });
   }
 
@@ -98,10 +98,10 @@ public class ProductSearchServiceTest {
       ProductDto.builder().brandName(BRAND_A).category(Category.SOCKS).price(1000).build(),
       ProductDto.builder().brandName(BRAND_A).category(Category.ACCESSORIES).price(1000).build());
     
-    when(productRepository.findSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findSetForSingleBrand(eq(PriceOrder.LOWEST)))
         .thenReturn(lowestProducts);
     
-    ProductSet productSet = productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
+    ProductSet productSet = productSearchService.searchSetForSingleBrand(PriceOrder.LOWEST);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -111,11 +111,11 @@ public class ProductSearchServiceTest {
   @DisplayName("한 브랜드 최저가격 세트 검색 실패 - DB 에러")
   public void getLowestPricedSetForSingleBrandFailDbError() {
 
-    when(productRepository.findSetForSingleBrand(eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findSetForSingleBrand(eq(PriceOrder.LOWEST)))
         .thenThrow(new DatabaseException());
     
     assertThrows(DatabaseException.class, () -> {
-      productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
+      productSearchService.searchSetForSingleBrand(PriceOrder.LOWEST);
     });
   }
 
@@ -124,10 +124,10 @@ public class ProductSearchServiceTest {
   public void getLowestPricedByCateogrySuccess() throws Exception {
     ProductDto lowestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(1000).build();
 
-    when(productRepository.findBy(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findBy(any(Category.class), eq(PriceOrder.LOWEST)))
         .thenReturn(Optional.of(lowestProduct));
     
-    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.LOWEST_PRICE).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, PriceOrder.LOWEST).get();
 
     assertNotNull(product);
     assertEquals(lowestProduct, product.get());
@@ -137,11 +137,11 @@ public class ProductSearchServiceTest {
   @DisplayName("카테고리 최저가격 검색 실패 - DB 에러")
   public void getLowestPricedByCateogryFailDbError() throws Exception {
     
-    when(productRepository.findBy(any(Category.class), eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findBy(any(Category.class), eq(PriceOrder.LOWEST)))
         .thenThrow(new DatabaseException());
     
     ExecutionException ex = assertThrows(ExecutionException.class, () -> {
-      productSearchService.searchCategory(Category.TOPS, SearchOrder.LOWEST_PRICE).get();
+      productSearchService.searchCategory(Category.TOPS, PriceOrder.LOWEST).get();
     });
     assertEquals(DatabaseException.class, ex.getCause().getClass());
   }
@@ -151,10 +151,10 @@ public class ProductSearchServiceTest {
   public void getHighestPricedByCateogrySuccess() throws Exception {
     ProductDto highestProduct = ProductDto.builder().brandName(BRAND_A).category(Category.TOPS).price(2000).build();
     
-    when(productRepository.findBy(any(Category.class), eq(SearchOrder.HIGHEST_PRICE)))
+    when(productRepository.findBy(any(Category.class), eq(PriceOrder.HIGHEST)))
         .thenReturn(Optional.of(highestProduct));
     
-    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.HIGHEST_PRICE).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, PriceOrder.HIGHEST).get();
 
     assertNotNull(product);
     assertEquals(highestProduct, product.get());
@@ -164,11 +164,11 @@ public class ProductSearchServiceTest {
   @DisplayName("카테고리 최고가격 검색 실패 - DB 에러")
   public void getHighestPricedByCateogryFailDbError() throws Exception {
     
-    when(productRepository.findBy(any(Category.class), any(SearchOrder.class)))
+    when(productRepository.findBy(any(Category.class), any(PriceOrder.class)))
         .thenThrow(new DatabaseException());
     
     ExecutionException ex = assertThrows(ExecutionException.class, () -> {
-      productSearchService.searchCategory(Category.TOPS, SearchOrder.HIGHEST_PRICE).get();
+      productSearchService.searchCategory(Category.TOPS, PriceOrder.HIGHEST).get();
     });
     assertEquals(DatabaseException.class, ex.getCause().getClass());
   }
@@ -191,7 +191,7 @@ public class ProductSearchServiceTest {
     when(cacheStorage.get(anyString(), any()))
         .thenReturn(Optional.of(lowestProducts));
 
-    ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+    ProductSet productSet = productSearchService.searchSet(PriceOrder.LOWEST);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -215,7 +215,7 @@ public class ProductSearchServiceTest {
     when(cacheStorage.get(anyString(), any()))
         .thenReturn(Optional.of(lowestProducts));
 
-    ProductSet productSet = productSearchService.searchSetForSingleBrand(SearchOrder.LOWEST_PRICE);
+    ProductSet productSet = productSearchService.searchSetForSingleBrand(PriceOrder.LOWEST);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
@@ -231,7 +231,7 @@ public class ProductSearchServiceTest {
     when(cacheStorage.get(anyString(), any()))
         .thenReturn(Optional.of(Optional.of(lowestProduct)));
     
-    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.LOWEST_PRICE).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, PriceOrder.LOWEST).get();
 
     assertNotNull(product);
     assertEquals(lowestProduct, product.get());
@@ -248,7 +248,7 @@ public class ProductSearchServiceTest {
     when(cacheStorage.get(anyString(), any()))
         .thenReturn(Optional.of(Optional.of(highestProduct)));
     
-    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, SearchOrder.HIGHEST_PRICE).get();
+    Optional<ProductDto> product = productSearchService.searchCategory(Category.TOPS, PriceOrder.HIGHEST).get();
 
     assertNotNull(product);
     assertEquals(highestProduct, product.get());
@@ -264,10 +264,10 @@ public class ProductSearchServiceTest {
     
     when(cacheStorage.get(anyString(), any()))
         .thenReturn(Optional.empty());
-    when(productRepository.findSet(eq(SearchOrder.LOWEST_PRICE)))
+    when(productRepository.findSet(eq(PriceOrder.LOWEST)))
         .thenReturn(lowestProducts);
     
-    ProductSet productSet = productSearchService.searchSet(SearchOrder.LOWEST_PRICE);
+    ProductSet productSet = productSearchService.searchSet(PriceOrder.LOWEST);
 
     assertNotNull(productSet);
     assertThat(productSet).containsExactlyInAnyOrderElementsOf(lowestProducts);
