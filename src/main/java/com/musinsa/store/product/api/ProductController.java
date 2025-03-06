@@ -66,7 +66,7 @@ public class ProductController {
   }
 
   @GetMapping("/by-category")
-  public ResponsePayload<ResultProductSetPayload> getOne(
+  public ResponsePayload<ResultProductSetPayload> getByCategory(
       @RequestParam(value = "category") Category category,
       @RequestParam(value = "price", defaultValue = "LOWEST") ProductCategoryPrice price) throws Throwable {
     log.info("get lowest/highest priced: category({})", category);
