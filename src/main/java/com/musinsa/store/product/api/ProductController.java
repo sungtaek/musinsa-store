@@ -18,7 +18,7 @@ import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductSearchService;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,23 +35,24 @@ public class ProductController {
       @RequestParam(value = "price", defaultValue = "LOWEST") ProductSetPrice price,
       @RequestParam(value = "singleBrand", defaultValue = "false") Boolean singleBrand) {
     log.info("get set: price({}) singleBrand({})", price, singleBrand);
-    CategoryProductSetPayload lowestPayload = null;
+    CategoryProductSetPayload productSetPayload = null;
 
-    SearchOrder searchOrder = (price.isHighest())
-        ? SearchOrder.HIGHEST_PRICE
-        : SearchOrder.LOWEST_PRICE;
+    PriceOrder priceOrder = (price.isHighest())
+        ? PriceOrder.HIGHEST
+        : PriceOrder.LOWEST;
 
     if(singleBrand) {
-      ProductSet productSet = productSearchService.searchSetForSingleBrand(searchOrder);
-      lowestPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
+      ProductSet productSet = productSearchService.searchSetForSingleBrand(priceOrder);
+      productSetPayload = CategoryProductSetPayload.from(getFristBrandName(productSet), productSet);
     } else {
-      ProductSet productSet = productSearchService.searchSet(searchOrder);
-      lowestPayload = CategoryProductSetPayload.from(productSet);
+      ProductSet productSet = productSearchService.searchSet(priceOrder);
+      productSetPayload = CategoryProductSetPayload.from(productSet);
     }
 
     return ResponsePayload.<ResultProductSetPayload>builder()
         .data(ResultProductSetPayload.builder()
-            .lowestPrice(lowestPayload)
+            .lowestPrice((priceOrder == PriceOrder.LOWEST) ? productSetPayload : null)
+            .highestPrice((priceOrder == PriceOrder.HIGHEST) ? productSetPayload : null)
             .build())
         .build();
   }
@@ -74,11 +75,11 @@ public class ProductController {
     CompletableFuture<Optional<ProductDto>> highestProduct = null;
     if (price.isLowest()) {
       lowestProduct = productSearchService
-          .searchCategory(category, SearchOrder.LOWEST_PRICE);
+          .searchCategory(category, PriceOrder.LOWEST);
     }
     if (price.isHighest()) {
       highestProduct = productSearchService
-          .searchCategory(category, SearchOrder.HIGHEST_PRICE);
+          .searchCategory(category, PriceOrder.HIGHEST);
     }
 
     CategoryProductSetPayload lowestPayload = null;

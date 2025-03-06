@@ -9,7 +9,7 @@ import com.musinsa.store.product.domain.Category;
 import com.musinsa.store.product.domain.ProductRepository;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 import com.musinsa.store.product.repository.entity.ProductEntity;
 import com.musinsa.store.product.repository.entity.QBrandEntity;
 import com.musinsa.store.product.repository.entity.QProductEntity;
@@ -26,15 +26,15 @@ public class QJpaProductRepository implements ProductRepository {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public ProductSet findSet(SearchOrder order) {
+  public ProductSet findSet(PriceOrder priceOrder) {
     QProductEntity product = QProductEntity.productEntity;
     QProductEntity product2 = new QProductEntity("product2");
     QProductEntity product3 = new QProductEntity("product3");
 
     NumberExpression<Integer> priceExpression;
-    if (order == SearchOrder.LOWEST_PRICE) {
+    if (priceOrder == PriceOrder.LOWEST) {
       priceExpression = product3.price.min();
-    } else if (order == SearchOrder.HIGHEST_PRICE) {
+    } else if (priceOrder == PriceOrder.HIGHEST) {
       priceExpression = product3.price.max();
     } else {
       priceExpression = product2.price.min();
@@ -73,15 +73,15 @@ public class QJpaProductRepository implements ProductRepository {
   }
 
   @Override
-  public ProductSet findSetForSingleBrand(SearchOrder order) {
+  public ProductSet findSetForSingleBrand(PriceOrder priceOrder) {
     QProductEntity product = QProductEntity.productEntity;
     QBrandEntity brand = QBrandEntity.brandEntity;
     QBrandEntity brand2 = new QBrandEntity("brand2");
 
     NumberExpression<Integer> priceExpression;
-    if (order == SearchOrder.LOWEST_PRICE) {
+    if (priceOrder == PriceOrder.LOWEST) {
       priceExpression = brand2.totalPrice.min();
-    } else if (order == SearchOrder.HIGHEST_PRICE) {
+    } else if (priceOrder == PriceOrder.HIGHEST) {
       priceExpression = brand2.totalPrice.max();
     } else {
       priceExpression = brand2.totalPrice.min();
@@ -113,22 +113,22 @@ public class QJpaProductRepository implements ProductRepository {
   }
 
   @Override
-  public Optional<ProductDto> findBy(Category category, SearchOrder order) {
+  public Optional<ProductDto> findBy(Category category, PriceOrder priceOrder) {
     QProductEntity product = QProductEntity.productEntity;
 
-    OrderSpecifier<Integer> priceOrder;
-    if (order == SearchOrder.LOWEST_PRICE) {
-      priceOrder = product.price.asc();
-    } else if (order == SearchOrder.HIGHEST_PRICE) {
-      priceOrder = product.price.desc();
+    OrderSpecifier<Integer> order;
+    if (priceOrder == PriceOrder.LOWEST) {
+      order = product.price.asc();
+    } else if (priceOrder == PriceOrder.HIGHEST) {
+      order = product.price.desc();
     } else {
-      priceOrder = product.price.asc();
+      order = product.price.asc();
     }
     try {
       return Optional.ofNullable(queryFactory
           .selectFrom(product)
           .where(product.category.eq(category))
-          .orderBy(priceOrder, product.id.desc())
+          .orderBy(order, product.id.desc())
           .fetchFirst()).map(ProductEntity::toProduct);
     } catch (Exception ex) {
       throw new DatabaseException(ex);
