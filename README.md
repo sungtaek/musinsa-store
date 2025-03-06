@@ -127,7 +127,7 @@ https://sungtaek.github.io/musinsa-store
   - 상품 검색 쿼리는 비용이 큰 Operation이므로, 성능 향상을 위하여 캐쉬를 사용합니다.  
     캐쉬 데이터는 브랜드 변경시 삭제하여 데이터 일관성을 유지합니다.  
     (브랜드 변경 이벤트는 내부 Event Publisher를 사용하여 컴포넌트간 의존성을 분리했습니다)  
-  - 현재 캐쉬는 내부 메로리를 사용하는 LocalCacheStorage를 사용하지만, 향후 다른 캐쉬 사용이 필요할 경우  
+  - 현재 캐쉬는 내부 메모리를 사용하는 LocalCacheStorage를 사용하지만, 향후 다른 캐쉬 사용이 필요할 경우  
     CacheStorage interface만 구현하면 Redis와 같은 중앙 캐쉬로 확장할 수 있습니다.  
   - 카테고리 최고 최저값을 한번에 요청하는 API의 경우, 두 값을 병렬로 조회하는것이 성능에 도움이 되기때문에  
     CompletableFuture로 비동기 병렬처리를 사용했습니다.  
