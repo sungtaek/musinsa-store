@@ -138,16 +138,16 @@ Base URLs:
 
 *카테고리 별 최저/최고가격 브랜드와 상품 가격, 총액을 조회*
 
-파라미터에 따라 최저/최고, 전체/단일 브랜드에 대한 상품을 조회합니다.
+파라미터에 따라 최저/최고 가격, 전체/단일 브랜드에 대한 상품을 조회합니다.
 
-<h4 id="get-products-set-parameters">Parameters</h4>
+<h4>Parameters</h4>
 
 |Name|In|Type|Required|Default|Description|
 |---|---|---|---|---|---|
-|price|query|string(enum)<br>LOWEST: 최저가<br>HIGHEST: 최고가|false|LOWEST|최저/최고 가격|
+|price|query|enum<br>LOWEST: 최저가<br>HIGHEST: 최고가|false|LOWEST|최저/최고 가격|
 |singleBrand|query|boolean|false|false|단일 브랜드 여부|
 
-<h4 id="register-responses">Responses</h4>
+<h4>Responses</h4>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -155,7 +155,7 @@ Base URLs:
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseProductSet](#response-product-set)|
 |500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseProductSet](#response-product-set)|
 
-<h5 id="response-product-set">ResponseProductSet</h5>
+<h5 id="response-product-set">Response Product Set</h5>
 
 |Name|Type|Required|Description|
 |---|---|---|---|
@@ -232,6 +232,65 @@ Base URLs:
 
 카테고리 이름을 파라미터로 받아서 해당 카테고리의 최저/최고 가격의 상품을 조회합니다.
 
+<h4>Parameters</h4>
+
+|Name|In|Type|Required|Default|Description|
+|---|---|---|---|---|---|
+|category|query|[CategoryCode](#category-code)|true||카테고리 코드|
+|price|query|enum<br>LOWEST: 최저가<br>HIGHEST: 최고가<br>LOWEST_HIGHEST: 최저&최고가|false|LOWEST|최저/최고 가격|
+|singleBrand|query|boolean|false|false|단일 브랜드 여부|
+
+<h4>Responses</h4>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Success|[ResponseProductCategory](#response-product-category)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Bad request|[ResponseProductCategory](#response-product-category)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal error|[ResponseProductCategory](#response-product-category)|
+
+<h5 id="response-product-category">Response Product Category</h5>
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|code|string|true|result code|
+|message|string|true|result message|
+|data|[ResultProductSet](#result-product-set)|false|product set|
+
+
+> Example
+
+```json
+> GET http://localhost:8080/api/v1/products/by-category?category=TOPS&price=LOWEST_HIGHEST
+
+< 200 OK
+{
+  "code": "0000",
+  "message": "Success",
+  "data": {
+    "category": "TOPS",
+    "lowestPrice": {
+      "products": [
+        {
+          "category": "TOPS",
+          "brandName": "C",
+          "price": 10000
+        }
+      ]
+    },
+    "highestPrice": {
+      "products": [
+        {
+          "category": "TOPS",
+          "brandName": "I",
+          "price": 11400
+        }
+      ]
+    }
+  }
+}
+```
+
+
 ### Get Brand List API
 `GET /api/v1/brands`
 
@@ -291,6 +350,19 @@ Base URLs:
 
 |Name|Type|Required|Description|
 |---|---|---|---|
-|category|string|true|카테고리|
+|category|[CategoryCode](#category-code)|true|카테고리 코드|
 |bandName|string|true|브랜드명|
 |price|integer|true|가격|
+
+<h5 id="category-code">Category Code</h5>
+
+|Code|Description|
+|---|---|
+|TOPS|상의|
+|OUTER|아우터|
+|PANTS|바지|
+|SNEAKERS|스니커즈|
+|BAGS|가방|
+|HATS|모자|
+|SOCKS|양말|
+|ACCESSORIES|악세서리|
