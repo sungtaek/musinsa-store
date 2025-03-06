@@ -107,7 +107,7 @@ https://sungtaek.github.io/musinsa-store
   Interface Adaptors Layer의 역할을 하는 API Controller, Repository, Storage 영역과    
   Domain Layer 역할을 하는 Usecase, Domain Entity 영역으로 나뉘어 있습니다.  
 - Persistent Entity를 Domain Entity와 분리하여 Repository 영역에 둠으로써, 향후 DB 연동관련 변경에도  
-  Domain 로직이 영향을 받지 않도록 않도록 했습니다.  
+  Domain 로직이 영향을 받지 않도록 했습니다.  
 
 #### 2. 기능
 - 브랜드 및 상품 관리:  
