@@ -71,7 +71,7 @@ https://sungtaek.github.io/musinsa-store
 ![로그인](./docs/musinsa_web_1.png)
 
 #### 2. 메뉴에 따라 상품 검색 및 브랜드/상품 관리를 할수 있습니다.
-![상품 조회](./docs/musinsa_web_.png)
+![상품 조회](./docs/musinsa_web_2.png)
 
 ## Package Structure
 
@@ -147,7 +147,7 @@ cache:
 
 |Name|In|Type|Required|Default|Description|
 |---|---|---|---|---|---|
-|price|query|enum<br>LOWEST: 최저가<br>HIGHEST: 최고가|false|LOWEST|최저/최고 가격|
+|price|query|string(enum)<br>LOWEST: 최저가<br>HIGHEST: 최고가|false|LOWEST|최저/최고 가격|
 |singleBrand|query|boolean|false|false|단일 브랜드 여부|
 
 <h4>Responses</h4>
@@ -239,8 +239,8 @@ cache:
 
 |Name|In|Type|Required|Default|Description|
 |---|---|---|---|---|---|
-|category|query|[CategoryCode](#category-code)|true||카테고리 코드|
-|price|query|enum<br>LOWEST: 최저가<br>HIGHEST: 최고가<br>LOWEST_HIGHEST: 최저&최고가|false|LOWEST|최저/최고 가격|
+|category|query|string([CategoryCode](#category-code))|true||카테고리 코드|
+|price|query|string(enum)<br>LOWEST: 최저가<br>HIGHEST: 최고가<br>LOWEST_HIGHEST: 최저&최고가|false|LOWEST|최저/최고 가격|
 
 <h4>Responses</h4>
 
@@ -792,7 +792,7 @@ cache:
 
 |Name|Type|Required|Description|
 |---|---|---|---|
-|category|[CategoryCode](#category-code)|true|카테고리 코드|
+|category|string([CategoryCode](#category-code))|true|카테고리 코드|
 |bandName|string|true|브랜드명|
 |price|integer|true|가격|
 
@@ -809,7 +809,7 @@ cache:
 |Name|Type|Required|Description|
 |---|---|---|---|
 |id|long|false|상품 id (조회 및 업데이트시 존재)|
-|category|[CategoryCode](#category-code)|true|카테고리 코드|
+|category|string([CategoryCode](#category-code))|true|카테고리 코드|
 |price|integer|true|가격|
 
 <h5 id="category-code">Category Code</h5>
