@@ -133,17 +133,17 @@ Base URLs:
 * <a href="http://localhost:8080">http://localhost:8080</a>
 
 ---
-### Get Lowest Priced Product Set API
-`GET /api/v1/products/lowest-set`
+### Get Product Set API
+`GET /api/v1/products/set`
 
-*카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회*
+*카테고리 별 최저/최고가격 브랜드와 상품 가격, 총액을 조회*
 
-파라미터에 따라 전체 브랜드 또는 하나의 브랜드에 대한 상품을 조회합니다.
+파라미터에 따라 최저/최고, 전체/단일 브랜드에 대한 상품을 조회합니다.
 
-### Get Lowest & Highest Priced Cateogry Product API
-`GET /api/v1/products/lowest-highest-category`
+### Get Product By Category API
+`GET /api/v1/products/by-category`
 
-*카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회*
+*카테고리 이름으로 최저/최고 가격 브랜드와 상품 가격을 조회*
 
 카테고리 이름을 파라미터로 받아서 해당 카테고리의 최저/최고 가격의 상품을 조회합니다.
 
