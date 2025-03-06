@@ -99,7 +99,38 @@ https://sungtaek.github.io/musinsa-store
 
 ## Application Architecture
 
-![Application](./docs/app.png)
+![Architecture](./docs/architecture.png)
+
+### 주요 구현내용
+#### 1. 컴포넌트 구조
+- Clean Architecture 기반으로 설계하였으며,  
+  Interface Adaptors Layer의 역할을 하는 API Controller, Repository, Storage 영역과    
+  Domain Layer 역할을 하는 Usecase, Domain Entity 영역으로 나뉘어 있습니다.  
+- Persistent Entity를 Domain Entity와 분리하여 Repository 영역에 둠으로써, 향후 DB 연동관련 변경에도  
+  Domain 로직이 영향을 받지 않도록 않도록 했습니다.  
+
+#### 2. 기능
+- 브랜드 및 상품 관리:  
+  - API 요청을 받으면 BrandController가 기본적인 파라미터 검사 후, BrandService를 호출합니다.  
+  - BrandService는 데이터 검사 후 BrandRepository를 이용하여 데이터 변경을 합니다.  
+    데이터 변경이 되었을경우 내부 컴포넌트에게 알려주기 위하여 브랜드 변경 이벤트를 publish합니다.  
+  - JpaBrandRepositoryAdaptor는 BrandRepository의 구현체로써, 내부적으로 JpaRepository를 사용합니다.  
+    브랜드 데이터의 CRUD는 JPA 기본 method로 충분히 처리 가능하여 JpaRepository를 사용했습니다.  
+
+- 상품 조회:
+  - API 요청을 받으면 ProductController가 기본적인 파라미터 검사 후, ProductSearchService를 호출합니다.  
+  - ProductSearchService는 검색 조건을 확인하여 ProductRepository를 이용하여 상품을 조회 합니다.  
+  - QJpaProductRepository는 ProductRepository의 구현체로써, QueryDSL을 사용하여 검색 조건에 따른 동적 쿼리를 생성합니다.  
+    향후에도 다양한 검색 query가 생길 수 있으므로, 동적 쿼리 생성을 사용했습니다.  
+
+#### 3. 성능 및 확장
+  - 상품 검색 쿼리는 비용이 큰 Operation이므로, 성능 향상을 위하여 캐쉬를 사용합니다.  
+    캐쉬 데이터는 브랜드 변경시 삭제하여 데이터 일관성을 유지합니다.  
+    (브랜드 변경 이벤트는 내부 Event Publisher를 사용하여 컴포넌트간 의존성을 분리했습니다)  
+  - 현재 캐쉬는 내부 메로리를 사용하는 LocalCacheStorage를 사용하지만, 향후 다른 캐쉬 사용이 필요할 경우  
+    CacheStorage interface만 구현하면 Redis와 같은 중앙 캐쉬로 확장할 수 있습니다.  
+  - 카테고리 최고 최저값을 한번에 요청하는 API의 경우, 두 값을 병렬로 조회하는것이 성능에 도움이 되기때문에  
+    CompletableFuture로 비동기 병렬처리를 사용했습니다.  
 
 
 ## Configuration
