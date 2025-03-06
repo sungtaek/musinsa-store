@@ -15,7 +15,7 @@ import com.musinsa.store.common.cache.CacheStorage;
 import com.musinsa.store.common.event.BrandEvent;
 import com.musinsa.store.product.domain.dto.ProductDto;
 import com.musinsa.store.product.domain.dto.ProductSet;
-import com.musinsa.store.product.domain.dto.SearchOrder;
+import com.musinsa.store.product.domain.dto.PriceOrder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,44 +43,44 @@ public class ProductSearchService {
     private Integer ttl;
   }
 
-  public ProductSet searchSet(SearchOrder order) {
-    log.info("search set by {}", order);
+  public ProductSet searchSet(PriceOrder priceOrder) {
+    log.info("search set by priceOrder({})", priceOrder);
 
     if (cacheProperties.active) {
-      String cacheKey = String.format("searchSet-%s", order);
+      String cacheKey = String.format("searchSet-%s", priceOrder);
       return useCache(cacheKey, ProductSet.class, () -> {
-        return productRepository.findSet(order);
+        return productRepository.findSet(priceOrder);
       });
     } else {
-      return productRepository.findSet(order);
+      return productRepository.findSet(priceOrder);
     }
   }
 
-  public ProductSet searchSetForSingleBrand(SearchOrder order) {
-    log.info("search set for single brand by {}", order);
+  public ProductSet searchSetForSingleBrand(PriceOrder priceOrder) {
+    log.info("search set for single brand by priceOrder({})", priceOrder);
 
     if (cacheProperties.active) {
-      String cacheKey = String.format("searchSetForSingleBrand-%s", order);
+      String cacheKey = String.format("searchSetForSingleBrand-%s", priceOrder);
       return useCache(cacheKey, ProductSet.class, () -> {
-        return productRepository.findSetForSingleBrand(order);
+        return productRepository.findSetForSingleBrand(priceOrder);
       });
     } else {
-      return productRepository.findSetForSingleBrand(order);
+      return productRepository.findSetForSingleBrand(priceOrder);
     }
   }
 
   @SuppressWarnings("unchecked")
-  public CompletableFuture<Optional<ProductDto>> searchCategory(Category category, SearchOrder order) {
+  public CompletableFuture<Optional<ProductDto>> searchCategory(Category category, PriceOrder priceOrder) {
     return CompletableFuture.supplyAsync(() -> {
-      log.info("search category({}) by {}", category, order);
+      log.info("search category({}) by priceOrder({})", category, priceOrder);
 
       if (cacheProperties.active) {
-        String cacheKey = String.format("searchCategory-%s-%s", category, order);
+        String cacheKey = String.format("searchCategory-%s-%s", category, priceOrder);
         return useCache(cacheKey, Optional.class, () -> {
-          return productRepository.findBy(category, order);
+          return productRepository.findBy(category, priceOrder);
         });
       } else {
-        return productRepository.findBy(category, order);
+        return productRepository.findBy(category, priceOrder);
       }
     });
   }
